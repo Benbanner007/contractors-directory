@@ -1,0 +1,325 @@
+---
+import type { Contractor } from '../../types/contractor';
+
+interface Props {
+  contractor: Contractor;
+}
+
+const { contractor } = Astro.props;
+
+// Helper function to format rating stars
+const getStarRating = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  
+  return {
+    full: '★'.repeat(fullStars),
+    half: hasHalfStar ? '☆' : '',
+    empty: '☆'.repeat(emptyStars)
+  };
+};
+
+const stars = getStarRating(contractor.rating);
+---
+
+<div class="contractor-card">
+  <div class="card-header">
+    {contractor.images.logo && (
+      <img 
+        src={contractor.images.logo} 
+        alt={`${contractor.businessName} logo`}
+        class="contractor-logo"
+      />
+    )}
+    <div class="contractor-badges">
+      {contractor.licensed && <span class="badge licensed">Licensed</span>}
+      {contractor.insured && <span class="badge insured">Insured</span>}
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <h3 class="business-name">{contractor.businessName}</h3>
+    <p class="contractor-name">by {contractor.name}</p>
+    
+    <div class="rating-section">
+      <div class="stars">
+        <span class="stars-filled">{stars.full}</span>
+        <span class="stars-half">{stars.half}</span>
+        <span class="stars-empty">{stars.empty}</span>
+      </div>
+      <span class="rating-text">{contractor.rating} ({contractor.reviewCount} reviews)</span>
+    </div>
+    
+    <div class="specialties">
+      {contractor.specialties.slice(0, 3).map(specialty => (
+        <span class="specialty-tag">{specialty}</span>
+      ))}
+    </div>
+    
+    <p class="description">{contractor.description}</p>
+    
+    <div class="location">
+      <span class="location-icon">📍</span>
+      <span>{contractor.address.city}, {contractor.address.state}</span>
+    </div>
+    
+    <div class="service-areas">
+      <strong>Service Areas:</strong> {contractor.serviceAreas.join(', ')}
+    </div>
+    
+    <div class="experience">
+      <span class="experience-icon">🏆</span>
+      <span>{contractor.yearsInBusiness} years in business</span>
+    </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="contact-info">
+      <a href={`tel:${contractor.phone}`} class="phone-link">
+        📞 {contractor.phone}
+      </a>
+      {contractor.website && (
+        <a href={contractor.website} target="_blank" rel="noopener" class="website-link">
+          🌐 Website
+        </a>
+      )}
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn-quote">Get Quote</button>
+      <a href={`/contractors/${contractor.category}/${contractor.id}`} class="btn-view">
+        View Profile
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .contractor-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-6);
+    transition: var(--transition);
+    border: 1px solid var(--gray-200);
+    height: fit-content;
+  }
+  
+  .contractor-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+  }
+  
+  .contractor-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    border: 2px solid var(--gray-200);
+  }
+  
+  .contractor-badges {
+    display: flex;
+    gap: var(--space-2);
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .badge {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .badge.licensed {
+    background: var(--green-100);
+    color: var(--green-800);
+  }
+  
+  .badge.insured {
+    background: var(--blue-100);
+    color: var(--blue-800);
+  }
+  
+  .card-content {
+    margin-bottom: var(--space-6);
+  }
+  
+  .business-name {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+    line-height: 1.3;
+  }
+  
+  .contractor-name {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--space-3);
+  }
+  
+  .rating-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  
+  .stars {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+  }
+  
+  .stars-filled {
+    color: var(--yellow-500);
+  }
+  
+  .stars-half {
+    color: var(--yellow-300);
+  }
+  
+  .stars-empty {
+    color: var(--gray-300);
+  }
+  
+  .rating-text {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+  }
+  
+  .specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  
+  .specialty-tag {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+  }
+  
+  .description {
+    color: var(--gray-600);
+    line-height: 1.5;
+    margin-bottom: var(--space-3);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .location, .service-areas, .experience {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  
+  .service-areas {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  
+  .location-icon, .experience-icon {
+    font-size: var(--font-size-base);
+  }
+  
+  .card-footer {
+    border-top: 1px solid var(--gray-200);
+    padding-top: var(--space-4);
+  }
+  
+  .contact-info {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  
+  .phone-link, .website-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--primary-600);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+  
+  .phone-link:hover, .website-link:hover {
+    color: var(--primary-700);
+    text-decoration: underline;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: var(--space-3);
+  }
+  
+  .btn-quote, .btn-view {
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+  }
+  
+  .btn-quote {
+    background: var(--primary-600);
+    color: white;
+  }
+  
+  .btn-quote:hover {
+    background: var(--primary-700);
+  }
+  
+  .btn-view {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+  
+  .btn-view:hover {
+    background: var(--gray-200);
+    text-decoration: none;
+  }
+  
+  @media (max-width: 768px) {
+    .contractor-card {
+      padding: var(--space-4);
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+    }
+    
+    .contact-info {
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+  }
+</style>

@@ -1,0 +1,285 @@
+---
+import { categories } from '../../data/contractors';
+
+const serviceAreas = [
+  'Raleigh', 'Durham', 'Chapel Hill', 'Cary', 'Apex', 
+  'Morrisville', 'Holly Springs', 'Carrboro', 'Fuquay-Varina', 'Pittsboro'
+];
+---
+
+<div class="filters-container">
+  <div class="filters-header">
+    <h3>Filter Contractors</h3>
+    <button type="button" class="clear-filters" onclick="clearAllFilters()">
+      Clear All
+    </button>
+  </div>
+  
+  <div class="filter-section">
+    <label for="search-input" class="filter-label">Search</label>
+    <input 
+      type="text" 
+      id="search-input"
+      placeholder="Search by name, business, or specialty..."
+      class="search-input"
+      oninput="filterContractors()"
+    />
+  </div>
+  
+  <div class="filter-section">
+    <label for="category-select" class="filter-label">Category</label>
+    <select id="category-select" class="filter-select" onchange="filterContractors()">
+      <option value="">All Categories</option>
+      {categories.map(category => (
+        <option value={category.id}>{category.name}</option>
+      ))}
+    </select>
+  </div>
+  
+  <div class="filter-section">
+    <label for="location-select" class="filter-label">Service Area</label>
+    <select id="location-select" class="filter-select" onchange="filterContractors()">
+      <option value="">All Areas</option>
+      {serviceAreas.map(area => (
+        <option value={area}>{area}</option>
+      ))}
+    </select>
+  </div>
+  
+  <div class="filter-section">
+    <label class="filter-label">Rating</label>
+    <div class="rating-filters">
+      <label class="checkbox-label">
+        <input type="checkbox" value="4.5" onchange="filterContractors()" class="rating-checkbox" />
+        <span class="checkmark"></span>
+        4.5+ Stars
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" value="4.0" onchange="filterContractors()" class="rating-checkbox" />
+        <span class="checkmark"></span>
+        4.0+ Stars
+      </label>
+    </div>
+  </div>
+  
+  <div class="filter-section">
+    <label class="filter-label">Credentials</label>
+    <div class="credential-filters">
+      <label class="checkbox-label">
+        <input type="checkbox" id="licensed-filter" onchange="filterContractors()" />
+        <span class="checkmark"></span>
+        Licensed
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="insured-filter" onchange="filterContractors()" />
+        <span class="checkmark"></span>
+        Insured
+      </label>
+    </div>
+  </div>
+  
+  <div class="filter-section">
+    <label for="experience-range" class="filter-label">Years of Experience</label>
+    <select id="experience-range" class="filter-select" onchange="filterContractors()">
+      <option value="">Any Experience</option>
+      <option value="5">5+ Years</option>
+      <option value="10">10+ Years</option>
+      <option value="15">15+ Years</option>
+      <option value="20">20+ Years</option>
+    </select>
+  </div>
+</div>
+
+<style>
+  .filters-container {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-6);
+    border: 1px solid var(--gray-200);
+    height: fit-content;
+    position: sticky;
+    top: var(--space-6);
+  }
+  
+  .filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  
+  .filters-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+  }
+  
+  .clear-filters {
+    background: none;
+    border: 1px solid var(--gray-300);
+    color: var(--gray-600);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .clear-filters:hover {
+    background: var(--gray-50);
+    color: var(--gray-700);
+  }
+  
+  .filter-section {
+    margin-bottom: var(--space-5);
+  }
+  
+  .filter-label {
+    display: block;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+  
+  .search-input, .filter-select {
+    width: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    transition: var(--transition);
+  }
+  
+  .search-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--primary-100);
+  }
+  
+  .rating-filters, .credential-filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--gray-700);
+    position: relative;
+    padding-left: var(--space-6);
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .checkmark {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 16px;
+    width: 16px;
+    background-color: white;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition);
+  }
+  
+  .checkbox-label:hover input ~ .checkmark {
+    border-color: var(--primary-500);
+  }
+  
+  .checkbox-label input:checked ~ .checkmark {
+    background-color: var(--primary-600);
+    border-color: var(--primary-600);
+  }
+  
+  .checkbox-label input:checked ~ .checkmark:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  @media (max-width: 1024px) {
+    .filters-container {
+      position: static;
+      margin-bottom: var(--space-6);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .filters-container {
+      padding: var(--space-4);
+    }
+    
+    .filters-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+    
+    .rating-filters, .credential-filters {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+</style>
+
+<script>
+  function filterContractors() {
+    const searchTerm = (document.getElementById('search-input') as HTMLInputElement)?.value.toLowerCase() || '';
+    const selectedCategory = (document.getElementById('category-select') as HTMLSelectElement)?.value || '';
+    const selectedLocation = (document.getElementById('location-select') as HTMLSelectElement)?.value || '';
+    const selectedExperience = parseInt((document.getElementById('experience-range') as HTMLSelectElement)?.value) || 0;
+    
+    const ratingCheckboxes = document.querySelectorAll('.rating-checkbox:checked') as NodeListOf<HTMLInputElement>;
+    const minRating = ratingCheckboxes.length > 0 ? Math.min(...Array.from(ratingCheckboxes).map(cb => parseFloat(cb.value))) : 0;
+    
+    const licensedRequired = (document.getElementById('licensed-filter') as HTMLInputElement)?.checked || false;
+    const insuredRequired = (document.getElementById('insured-filter') as HTMLInputElement)?.checked || false;
+    
+    // Dispatch custom event with filter criteria
+    window.dispatchEvent(new CustomEvent('contractorFilter', {
+      detail: {
+        searchTerm,
+        selectedCategory,
+        selectedLocation,
+        minRating,
+        selectedExperience,
+        licensedRequired,
+        insuredRequired
+      }
+    }));
+  }
+  
+  function clearAllFilters() {
+    (document.getElementById('search-input') as HTMLInputElement).value = '';
+    (document.getElementById('category-select') as HTMLSelectElement).value = '';
+    (document.getElementById('location-select') as HTMLSelectElement).value = '';
+    (document.getElementById('experience-range') as HTMLSelectElement).value = '';
+    
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      (checkbox as HTMLInputElement).checked = false;
+    });
+    
+    filterContractors();
+  }
+</script>

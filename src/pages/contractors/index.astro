@@ -1,0 +1,742 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContractorCard from '../../components/contractor/ContractorCard.astro';
+import ContractorFilters from '../../components/contractor/ContractorFilters.astro';
+import { contractors } from '../../data/contractors';
+
+const title = "Find Contractors in the Triangle - Licensed & Insured Professionals";
+const description = "Browse our directory of verified contractors in Raleigh, Durham, Chapel Hill and surrounding areas. Find licensed plumbers, electricians, roofers, HVAC specialists and more.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Triangle Contractors Directory",
+  "description": description,
+  "url": "https://trianglecontractorshub.com/contractors",
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": contractors.length,
+    "itemListElement": contractors.map((contractor, index) => ({
+      "@type": "LocalBusiness",
+      "position": index + 1,
+      "name": contractor.businessName,
+      "description": contractor.description,
+      "telephone": contractor.phone,
+      "url": contractor.website,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": contractor.address.street,
+        "addressLocality": contractor.address.city,
+        "addressRegion": contractor.address.state,
+        "postalCode": contractor.address.zipCode
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": contractor.rating,
+        "reviewCount": contractor.reviewCount
+      }
+    }))
+  }
+};
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <div class="contractors-page">
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="container">
+        <div class="header-content">
+          <h1>Find Trusted Contractors</h1>
+          <p class="header-description">
+            Browse our directory of {contractors.length} verified contractors serving the Triangle area. 
+            All contractors are licensed, insured, and background checked.
+          </p>
+          
+          <div class="header-stats">
+            <div class="stat">
+              <span class="stat-number">{contractors.length}+</span>
+              <span class="stat-label">Contractors</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{contractors.reduce((sum, c) => sum + c.reviewCount, 0)}+</span>
+              <span class="stat-label">Reviews</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{(contractors.reduce((sum, c) => sum + c.rating, 0) / contractors.length).toFixed(1)}★</span>
+              <span class="stat-label">Avg Rating</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+      <div class="container">
+        <div class="content-grid">
+          <!-- Filters Sidebar -->
+          <aside class="filters-sidebar">
+            <ContractorFilters />
+          </aside>
+          
+          <!-- Contractors Grid -->
+          <main class="contractors-section">
+            <div class="section-header">
+              <div class="results-info">
+                <h2 id="results-count">Showing {contractors.length} contractors</h2>
+                <p class="results-subtitle">Licensed and insured professionals in your area</p>
+              </div>
+              
+              <div class="sort-controls">
+                <label for="sort-select" class="sort-label">Sort by:</label>
+                <select id="sort-select" class="sort-select" onchange="sortContractors()">
+                  <option value="rating">Highest Rated</option>
+                  <option value="reviews">Most Reviews</option>
+                  <option value="experience">Most Experienced</option>
+                  <option value="name">Name A-Z</option>
+                </select>
+              </div>
+            </div>
+            
+            <div id="contractors-grid" class="contractors-grid">
+              {contractors.map(contractor => (
+                <ContractorCard contractor={contractor} />
+              ))}
+            </div>
+            
+            <div id="no-results" class="no-results" style="display: none;">
+              <div class="no-results-content">
+                <h3>No contractors found</h3>
+                <p>Try adjusting your filters or search terms to find more contractors.</p>
+                <button type="button" onclick="clearAllFilters()" class="btn-clear">
+                  Clear All Filters
+                </button>
+              </div>
+            </div>
+            
+            <!-- Load More Button (for future pagination) -->
+            <div class="load-more-section" style="display: none;">
+              <button class="load-more-btn">Load More Contractors</button>
+            </div>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Can't Find What You're Looking For?</h2>
+          <p>Post your project and get quotes from qualified contractors in your area.</p>
+          <a href="/post-project" class="cta-button">Post Your Project</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .contractors-page {
+    min-height: 100vh;
+  }
+  
+  /* Page Header */
+  .page-header {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    color: white;
+    padding: var(--space-16) 0 var(--space-12);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v20h40V20H20z'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.1;
+  }
+  
+  .header-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  
+  .page-header h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    line-height: 1.2;
+  }
+  
+  .header-description {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-8);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.95;
+  }
+  
+  .header-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  
+  .stat-number {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+  }
+  
+  .stat-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+  }
+  
+  /* Main Content */
+  .main-content {
+    padding: var(--space-12) 0;
+    background: var(--gray-50);
+  }
+  
+  .content-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+  
+  .filters-sidebar {
+    position: relative;
+  }
+  
+  .contractors-section {
+    min-height: 600px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+  
+  .results-info h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+  }
+  
+  .results-subtitle {
+    color: var(--gray-600);
+    font-size: var(--font-size-base);
+  }
+  
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  
+  .sort-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: var(--font-size-sm);
+  }
+  
+  .sort-select {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    background: white;
+    min-width: 160px;
+  }
+  
+  .contractors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: var(--space-12) var(--space-6);
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .no-results-content h3 {
+    font-size: var(--font-size-xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+  }
+  
+  .no-results-content p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-6);
+  }
+  
+  .btn-clear {
+    background: var(--primary-600);
+    color: white;
+    border: none;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .btn-clear:hover {
+    background: var(--primary-700);
+  }
+  
+  .load-more-section {
+    text-align: center;
+    margin-top: var(--space-8);
+  }
+  
+  .load-more-btn {
+    background: white;
+    color: var(--primary-600);
+    border: 2px solid var(--primary-600);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .load-more-btn:hover {
+    background: var(--primary-50);
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    background: white;
+    padding: var(--space-16) 0;
+    border-top: 1px solid var(--gray-200);
+  }
+  
+  .cta-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .cta-content h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+  }
+  
+  .cta-content p {
+    color: var(--gray-600);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-6);
+  }
+  
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    background: var(--primary-600);
+    color: white;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  
+  .cta-button:hover {
+    background: var(--primary-700);
+    text-decoration: none;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+    
+    .contractors-grid {
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .page-header {
+      padding: var(--space-12) 0 var(--space-8);
+    }
+    
+    .page-header h1 {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .header-description {
+      font-size: var(--font-size-base);
+    }
+    
+    .header-stats {
+      gap: var(--space-6);
+    }
+    
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .contractors-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .sort-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .main-content {
+      padding: var(--space-8) 0;
+    }
+    
+    .contractors-grid {
+      gap: var(--space-4);
+    }
+  }
+</style>
+
+<script>
+  // Store original contractors data
+  const allContractors = [
+    {
+      id: '1',
+      name: 'Mike Johnson',
+      businessName: 'Johnson Plumbing Services',
+      category: 'plumbing',
+      specialties: ['Emergency Repairs', 'Kitchen Plumbing', 'Bathroom Remodels'],
+      description: 'Professional plumbing services with over 15 years of experience. We handle everything from simple repairs to complete bathroom renovations.',
+      phone: '(919) 555-0123',
+      email: 'mike@johnsonplumbing.com',
+      website: 'https://johnsonplumbing.com',
+      address: {
+        street: '123 Oak Street',
+        city: 'Raleigh',
+        state: 'NC',
+        zipCode: '27601'
+      },
+      serviceAreas: ['Raleigh', 'Cary', 'Apex', 'Morrisville'],
+      yearsInBusiness: 15,
+      licensed: true,
+      insured: true,
+      certifications: ['NC Licensed Plumber', 'Backflow Prevention'],
+      rating: 4.8,
+      reviewCount: 127,
+      images: {
+        logo: '/images/contractors/johnson-plumbing-logo.jpg',
+        portfolio: ['/images/contractors/johnson-1.jpg', '/images/contractors/johnson-2.jpg']
+      }
+    },
+    {
+      id: '2',
+      name: 'Sarah Thompson',
+      businessName: 'Thompson Electric',
+      category: 'electrical',
+      specialties: ['Home Wiring', 'Panel Upgrades', 'Smart Home Installation'],
+      description: 'Licensed electrician serving the Triangle area for over 12 years. Specializing in residential electrical work and smart home technology.',
+      phone: '(919) 555-0456',
+      email: 'sarah@thompsonelectric.com',
+      website: 'https://thompsonelectric.com',
+      address: {
+        street: '456 Pine Avenue',
+        city: 'Durham',
+        state: 'NC',
+        zipCode: '27701'
+      },
+      serviceAreas: ['Durham', 'Chapel Hill', 'Carrboro', 'Hillsborough'],
+      yearsInBusiness: 12,
+      licensed: true,
+      insured: true,
+      certifications: ['NC Licensed Electrician', 'Tesla Powerwall Certified'],
+      rating: 4.9,
+      reviewCount: 89
+    },
+    {
+      id: '3',
+      name: 'David Rodriguez',
+      businessName: 'Rodriguez Roofing Co.',
+      category: 'roofing',
+      specialties: ['Asphalt Shingles', 'Metal Roofing', 'Storm Damage Repair'],
+      description: 'Family-owned roofing company with 20+ years of experience. We provide quality roofing solutions and work with insurance companies.',
+      phone: '(919) 555-0789',
+      email: 'david@rodriguezroofing.com',
+      website: 'https://rodriguezroofing.com',
+      address: {
+        street: '789 Cedar Lane',
+        city: 'Cary',
+        state: 'NC',
+        zipCode: '27511'
+      },
+      serviceAreas: ['Cary', 'Apex', 'Holly Springs', 'Fuquay-Varina', 'Raleigh'],
+      yearsInBusiness: 22,
+      licensed: true,
+      insured: true,
+      certifications: ['GAF Master Elite', 'Owens Corning Preferred'],
+      rating: 4.7,
+      reviewCount: 156
+    },
+    {
+      id: '4',
+      name: 'Jennifer Lee',
+      businessName: 'Lee HVAC Solutions',
+      category: 'hvac',
+      specialties: ['AC Installation', 'Heating Repair', 'Duct Cleaning'],
+      description: 'Professional HVAC services for residential and commercial properties. Emergency service available 24/7.',
+      phone: '(919) 555-0234',
+      email: 'jennifer@leehvac.com',
+      website: 'https://leehvac.com',
+      address: {
+        street: '234 Maple Drive',
+        city: 'Chapel Hill',
+        state: 'NC',
+        zipCode: '27514'
+      },
+      serviceAreas: ['Chapel Hill', 'Durham', 'Carrboro', 'Pittsboro'],
+      yearsInBusiness: 8,
+      licensed: true,
+      insured: true,
+      certifications: ['EPA Certified', 'NATE Certified'],
+      rating: 4.6,
+      reviewCount: 73
+    },
+    {
+      id: '5',
+      name: 'Robert Wilson',
+      businessName: 'Wilson General Contracting',
+      category: 'general-contractor',
+      specialties: ['Kitchen Remodels', 'Bathroom Renovations', 'Home Additions'],
+      description: 'Full-service general contractor specializing in home renovations and additions. Licensed and bonded with 18 years of experience.',
+      phone: '(919) 555-0567',
+      email: 'robert@wilsoncontracting.com',
+      website: 'https://wilsoncontracting.com',
+      address: {
+        street: '567 Birch Street',
+        city: 'Apex',
+        state: 'NC',
+        zipCode: '27502'
+      },
+      serviceAreas: ['Apex', 'Cary', 'Holly Springs', 'Morrisville', 'Raleigh'],
+      yearsInBusiness: 18,
+      licensed: true,
+      insured: true,
+      certifications: ['NC General Contractor License', 'OSHA 30-Hour'],
+      rating: 4.8,
+      reviewCount: 201
+    },
+    {
+      id: '6',
+      name: 'Lisa Chen',
+      businessName: 'Chen Landscaping & Design',
+      category: 'landscaping',
+      specialties: ['Landscape Design', 'Hardscaping', 'Irrigation Systems'],
+      description: 'Creative landscape design and installation services. Transforming outdoor spaces with beautiful, sustainable designs.',
+      phone: '(919) 555-0890',
+      email: 'lisa@chenlandscaping.com',
+      website: 'https://chenlandscaping.com',
+      address: {
+        street: '890 Willow Way',
+        city: 'Morrisville',
+        state: 'NC',
+        zipCode: '27560'
+      },
+      serviceAreas: ['Morrisville', 'Cary', 'Apex', 'Raleigh', 'Durham'],
+      yearsInBusiness: 10,
+      licensed: true,
+      insured: true,
+      certifications: ['Certified Landscape Professional', 'Irrigation Association Certified'],
+      rating: 4.9,
+      reviewCount: 68
+    }
+  ];
+
+  let filteredContractors = [...allContractors];
+
+  // Listen for filter events
+  window.addEventListener('contractorFilter', (event: any) => {
+    const filters = event.detail;
+    applyFilters(filters);
+  });
+
+  function applyFilters(filters: any) {
+    filteredContractors = allContractors.filter(contractor => {
+      // Search term filter
+      if (filters.searchTerm) {
+        const searchable = `${contractor.name} ${contractor.businessName} ${contractor.specialties.join(' ')} ${contractor.description}`.toLowerCase();
+        if (!searchable.includes(filters.searchTerm)) return false;
+      }
+      
+      // Category filter
+      if (filters.selectedCategory && contractor.category !== filters.selectedCategory) {
+        return false;
+      }
+      
+      // Location filter
+      if (filters.selectedLocation && !contractor.serviceAreas.includes(filters.selectedLocation)) {
+        return false;
+      }
+      
+      // Rating filter
+      if (filters.minRating && contractor.rating < filters.minRating) {
+        return false;
+      }
+      
+      // Experience filter
+      if (filters.selectedExperience && contractor.yearsInBusiness < filters.selectedExperience) {
+        return false;
+      }
+      
+      // Credential filters
+      if (filters.licensedRequired && !contractor.licensed) {
+        return false;
+      }
+      
+      if (filters.insuredRequired && !contractor.insured) {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    updateDisplay();
+  }
+
+  function sortContractors() {
+    const sortBy = (document.getElementById('sort-select') as HTMLSelectElement).value;
+    
+    filteredContractors.sort((a, b) => {
+      switch (sortBy) {
+        case 'rating':
+          return b.rating - a.rating;
+        case 'reviews':
+          return b.reviewCount - a.reviewCount;
+        case 'experience':
+          return b.yearsInBusiness - a.yearsInBusiness;
+        case 'name':
+          return a.businessName.localeCompare(b.businessName);
+        default:
+          return 0;
+      }
+    });
+    
+    updateDisplay();
+  }
+
+  function updateDisplay() {
+    const grid = document.getElementById('contractors-grid');
+    const noResults = document.getElementById('no-results');
+    const resultsCount = document.getElementById('results-count');
+    
+    if (filteredContractors.length === 0) {
+      grid!.style.display = 'none';
+      noResults!.style.display = 'block';
+      resultsCount!.textContent = 'No contractors found';
+    } else {
+      grid!.style.display = 'grid';
+      noResults!.style.display = 'none';
+      resultsCount!.textContent = `Showing ${filteredContractors.length} contractor${filteredContractors.length !== 1 ? 's' : ''}`;
+      
+      // Update grid HTML (simplified version - in a real app you'd use a more sophisticated approach)
+      grid!.innerHTML = filteredContractors.map(contractor => {
+        const stars = getStarRating(contractor.rating);
+        return `
+          <div class="contractor-card">
+            <div class="card-header">
+              <div class="contractor-badges">
+                ${contractor.licensed ? '<span class="badge licensed">Licensed</span>' : ''}
+                ${contractor.insured ? '<span class="badge insured">Insured</span>' : ''}
+              </div>
+            </div>
+            <div class="card-content">
+              <h3 class="business-name">${contractor.businessName}</h3>
+              <p class="contractor-name">by ${contractor.name}</p>
+              <div class="rating-section">
+                <div class="stars">
+                  <span class="stars-filled">${stars.full}</span>
+                  <span class="stars-half">${stars.half}</span>
+                  <span class="stars-empty">${stars.empty}</span>
+                </div>
+                <span class="rating-text">${contractor.rating} (${contractor.reviewCount} reviews)</span>
+              </div>
+              <div class="specialties">
+                ${contractor.specialties.slice(0, 3).map(specialty => 
+                  `<span class="specialty-tag">${specialty}</span>`
+                ).join('')}
+              </div>
+              <p class="description">${contractor.description}</p>
+              <div class="location">
+                <span class="location-icon">📍</span>
+                <span>${contractor.address.city}, ${contractor.address.state}</span>
+              </div>
+              <div class="service-areas">
+                <strong>Service Areas:</strong> ${contractor.serviceAreas.join(', ')}
+              </div>
+              <div class="experience">
+                <span class="experience-icon">🏆</span>
+                <span>${contractor.yearsInBusiness} years in business</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="contact-info">
+                <a href="tel:${contractor.phone}" class="phone-link">📞 ${contractor.phone}</a>
+                ${contractor.website ? `<a href="${contractor.website}" target="_blank" rel="noopener" class="website-link">🌐 Website</a>` : ''}
+              </div>
+              <div class="action-buttons">
+                <button class="btn-quote">Get Quote</button>
+                <a href="/contractors/${contractor.category}/${contractor.id}" class="btn-view">View Profile</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function getStarRating(rating: number) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    return {
+      full: '★'.repeat(fullStars),
+      half: hasHalfStar ? '☆' : '',
+      empty: '☆'.repeat(emptyStars)
+    };
+  }
+
+  // Global function for clearing filters (called from filters component)
+  (window as any).clearAllFilters = function() {
+    filteredContractors = [...allContractors];
+    updateDisplay();
+  }
+</script>
