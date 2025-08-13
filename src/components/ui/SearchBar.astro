@@ -1,0 +1,134 @@
+---
+export interface Props {
+  placeholder?: string;
+  showLocationInput?: boolean;
+}
+
+const { 
+  placeholder = "What type of contractor do you need?",
+  showLocationInput = true 
+} = Astro.props;
+---
+
+<div class="search-container">
+  <form class="search-form" role="search" aria-label="Find contractors">
+    <div class="search-inputs">
+      <div class="search-field">
+        <label for="service-search" class="sr-only">Service type</label>
+        <input
+          id="service-search"
+          type="text"
+          name="service"
+          placeholder={placeholder}
+          class="search-input service-input"
+          autocomplete="off"
+        />
+      </div>
+      
+      {showLocationInput && (
+        <div class="search-field">
+          <label for="location-search" class="sr-only">Location</label>
+          <input
+            id="location-search"
+            type="text"
+            name="location"
+            placeholder="Raleigh, Durham, Chapel Hill..."
+            class="search-input location-input"
+            autocomplete="address-level2"
+          />
+        </div>
+      )}
+    </div>
+    
+    <button type="submit" class="search-button" aria-label="Search contractors">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Search
+    </button>
+  </form>
+</div>
+
+<style>
+  .search-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-200);
+  }
+
+  .search-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .search-field {
+    flex: 1;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    transition: var(--transition);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+  }
+
+  .search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    background: var(--primary-600);
+    color: white;
+    border: none;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .search-button:hover {
+    background: var(--primary-700);
+  }
+
+  .search-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(59 130 246 / 0.3);
+  }
+
+  @media (min-width: 768px) {
+    .search-inputs {
+      flex-direction: row;
+    }
+    
+    .search-form {
+      flex-direction: row;
+      align-items: end;
+    }
+    
+    .search-button {
+      white-space: nowrap;
+    }
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+import type { ContractorCategory } from '../../types/contractor';
+
+const categories: ContractorCategory[] = [
+  {
+    id: '1',
+    name: 'General Contractors',
+    slug: 'general-contractors',
+    description: 'Full-service construction and renovation experts',
+    icon: '🏗️',
+    subcategories: ['Home Renovation', 'Commercial Construction', 'Custom Homes']
+  },
+  {
+    id: '2',
+    name: 'Plumbers',
+    slug: 'plumbers',
+    description: 'Water, sewer, and gas line professionals',
+    icon: '🔧',
+    subcategories: ['Emergency Plumbing', 'Bathroom Renovation', 'Water Heaters']
+  },
+  {
+    id: '3',
+    name: 'Electricians',
+    slug: 'electricians',
+    description: 'Electrical installation and repair specialists',
+    icon: '⚡',
+    subcategories: ['Electrical Panels', 'Lighting Installation', 'Smart Home']
+  },
+  {
+    id: '4',
+    name: 'HVAC Contractors',
+    slug: 'hvac-contractors',
+    description: 'Heating, ventilation, and air conditioning experts',
+    icon: '❄️',
+    subcategories: ['AC Installation', 'Heating Repair', 'Duct Cleaning']
+  },
+  {
+    id: '5',
+    name: 'Roofers',
+    slug: 'roofers',
+    description: 'Roof installation, repair, and maintenance',
+    icon: '🏠',
+    subcategories: ['Roof Replacement', 'Gutter Installation', 'Roof Inspection']
+  },
+  {
+    id: '6',
+    name: 'Flooring Contractors',
+    slug: 'flooring-contractors',
+    description: 'Hardwood, tile, carpet, and specialty flooring',
+    icon: '🪵',
+    subcategories: ['Hardwood Installation', 'Tile Work', 'Carpet Installation']
+  },
+  {
+    id: '7',
+    name: 'Landscapers',
+    slug: 'landscapers',
+    description: 'Outdoor design and maintenance professionals',
+    icon: '🌿',
+    subcategories: ['Lawn Care', 'Garden Design', 'Irrigation Systems']
+  },
+  {
+    id: '8',
+    name: 'Painters',
+    slug: 'painters',
+    description: 'Interior and exterior painting specialists',
+    icon: '🎨',
+    subcategories: ['Interior Painting', 'Exterior Painting', 'Cabinet Refinishing']
+  }
+];
+---
+
+<section class="category-grid-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Popular Contractor Categories</h2>
+      <p>Find trusted professionals for your next project in the Triangle area</p>
+    </div>
+    
+    <div class="category-grid">
+      {categories.map((category) => (
+        <a href={`/categories/${category.slug}`} class="category-card">
+          <div class="category-icon">{category.icon}</div>
+          <div class="category-content">
+            <h3 class="category-name">{category.name}</h3>
+            <p class="category-description">{category.description}</p>
+            <ul class="category-subcategories">
+              {category.subcategories.slice(0, 3).map((subcategory) => (
+                <li>{subcategory}</li>
+              ))}
+            </ul>
+          </div>
+        </a>
+      ))}
+    </div>
+    
+    <div class="view-all-categories">
+      <a href="/categories" class="view-all-link">
+        View All Categories →
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .category-grid-section {
+    padding: var(--space-20) 0;
+    background: var(--gray-50);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-16);
+  }
+
+  .section-header h2 {
+    font-size: var(--font-size-3xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+  }
+
+  .section-header p {
+    font-size: var(--font-size-lg);
+    color: var(--gray-600);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+
+  .category-card {
+    display: block;
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+  }
+
+  .category-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: var(--primary-50);
+    border-radius: 50%;
+    margin: 0 auto var(--space-4);
+  }
+
+  .category-content {
+    text-align: center;
+  }
+
+  .category-name {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+  }
+
+  .category-description {
+    color: var(--gray-600);
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .category-subcategories {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+
+  .category-subcategories li {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+  }
+
+  .view-all-categories {
+    text-align: center;
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--primary-600);
+    font-weight: 600;
+    font-size: var(--font-size-lg);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .view-all-link:hover {
+    color: var(--primary-700);
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .category-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .category-grid-section {
+      padding: var(--space-16) 0;
+    }
+  }
+</style>

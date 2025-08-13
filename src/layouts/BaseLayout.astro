@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  structuredData?: object;
+  noindex?: boolean;
+}
+
+const { 
+  title, 
+  description, 
+  canonical, 
+  ogImage = '/images/og-default.jpg',
+  structuredData,
+  noindex = false 
+} = Astro.props;
+
+const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
+    
+    {noindex && <meta name="robots" content="noindex" />}
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Triangle Contractors Hub" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+    
+    <!-- Local Business Meta -->
+    <meta name="geo.region" content="US-NC" />
+    <meta name="geo.placename" content="Raleigh, Durham, Chapel Hill" />
+    <meta name="ICBM" content="35.7796,-78.6382" />
+    
+    <!-- Structured Data -->
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
