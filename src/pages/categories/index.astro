@@ -1,0 +1,364 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { contractorDb } from '../../lib/database';
+import { categories } from '../../data/contractors';
+
+const title = "Contractor Categories | Find Specialists in Triangle Area";
+const description = "Browse contractors by specialty - plumbing, electrical, roofing, HVAC, and more. Licensed professionals in Raleigh, Durham, Chapel Hill.";
+
+// Get contractor counts for each category
+const categoriesWithCounts = categories.map(category => {
+  const contractors = contractorDb.getByCategory(category.id);
+  return {
+    ...category,
+    contractorCount: contractors.length,
+    avgRating: contractors.length > 0 
+      ? (contractors.reduce((sum, c) => sum + c.rating, 0) / contractors.length).toFixed(1)
+      : '0'
+  };
+});
+
+const categoryIcons = {
+  plumbing: '🔧',
+  electrical: '⚡',
+  roofing: '🏠',
+  hvac: '❄️',
+  'general-contractor': '🏗️',
+  landscaping: '🌿',
+  painting: '🎨',
+  flooring: '🏢'
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="categories-page">
+    <!-- Hero Section -->
+    <section class="categories-hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Browse Contractor Categories</h1>
+          <p>Find the right specialist for your project. All contractors are licensed, insured, and background-checked.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Grid -->
+    <section class="categories-section">
+      <div class="container">
+        <div class="categories-grid">
+          {categoriesWithCounts.map(category => (
+            <a href={`/categories/${category.slug}`} class="category-card">
+              <div class="category-icon">
+                {categoryIcons[category.id] || '🔨'}
+              </div>
+              <div class="category-content">
+                <h3>{category.name}</h3>
+                <div class="category-stats">
+                  <div class="stat">
+                    <span class="stat-number">{category.contractorCount}</span>
+                    <span class="stat-label">Contractors</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-number">{category.avgRating}★</span>
+                    <span class="stat-label">Avg Rating</span>
+                  </div>
+                </div>
+                <div class="category-arrow">→</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Services -->
+    <section class="popular-services">
+      <div class="container">
+        <h2>Popular Services</h2>
+        <div class="services-grid">
+          <div class="service-item">
+            <h4>Emergency Repairs</h4>
+            <p>24/7 emergency plumbing, electrical, and HVAC services</p>
+          </div>
+          <div class="service-item">
+            <h4>Home Renovations</h4>
+            <p>Kitchen and bathroom remodels, room additions, and more</p>
+          </div>
+          <div class="service-item">
+            <h4>Roof Replacement</h4>
+            <p>Complete roof replacement and storm damage repairs</p>
+          </div>
+          <div class="service-item">
+            <h4>HVAC Installation</h4>
+            <p>New heating and cooling system installation and upgrades</p>
+          </div>
+          <div class="service-item">
+            <h4>Landscape Design</h4>
+            <p>Complete outdoor makeovers and hardscaping projects</p>
+          </div>
+          <div class="service-item">
+            <h4>Interior Painting</h4>
+            <p>Professional interior painting with color consultation</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Can't Find What You're Looking For?</h2>
+          <p>Browse all contractors or search by specific services and location.</p>
+          <div class="cta-buttons">
+            <a href="/contractors" class="btn-primary">View All Contractors</a>
+            <a href="/blog" class="btn-secondary">Read Expert Tips</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .categories-page {
+    min-height: 100vh;
+  }
+
+  /* Hero Section */
+  .categories-hero {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    color: white;
+    padding: var(--space-16) 0 var(--space-12);
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    line-height: 1.2;
+  }
+
+  .hero-content p {
+    font-size: var(--font-size-lg);
+    opacity: 0.95;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Categories Section */
+  .categories-section {
+    padding: var(--space-16) 0;
+    background: var(--gray-50);
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .category-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+  }
+
+  .category-card:hover .category-arrow {
+    transform: translateX(4px);
+  }
+
+  .category-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+    text-align: center;
+  }
+
+  .category-content h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+    text-align: center;
+  }
+
+  .category-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-4);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .stat-number {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--primary-600);
+  }
+
+  .stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--gray-500);
+  }
+
+  .category-arrow {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    font-size: var(--font-size-xl);
+    color: var(--primary-600);
+    transition: var(--transition);
+  }
+
+  /* Popular Services */
+  .popular-services {
+    padding: var(--space-16) 0;
+    background: white;
+  }
+
+  .popular-services h2 {
+    text-align: center;
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-8);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .service-item {
+    padding: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+  }
+
+  .service-item:hover {
+    border-color: var(--primary-200);
+    background: var(--primary-25);
+  }
+
+  .service-item h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+  }
+
+  .service-item p {
+    color: var(--gray-600);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding: var(--space-16) 0;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .cta-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-content h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+  }
+
+  .cta-content p {
+    color: var(--gray-600);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-6);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .btn-primary {
+    background: var(--primary-600);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-700);
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+
+  .btn-secondary:hover {
+    background: var(--gray-50);
+    text-decoration: none;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .categories-hero {
+      padding: var(--space-12) 0 var(--space-8);
+    }
+
+    .hero-content h1 {
+      font-size: var(--font-size-3xl);
+    }
+
+    .categories-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>

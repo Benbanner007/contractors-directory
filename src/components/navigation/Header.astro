@@ -1,0 +1,354 @@
+---
+// No props needed for now
+---
+
+<header class="site-header">
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-content">
+        <!-- Logo -->
+        <div class="nav-brand">
+          <a href="/" class="brand-link">
+            <span class="brand-icon">🏠</span>
+            <span class="brand-text">Triangle Contractors Hub</span>
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <span class="hamburger"></span>
+          <span class="hamburger"></span>
+          <span class="hamburger"></span>
+        </button>
+
+        <!-- Navigation Links -->
+        <div class="nav-links" id="nav-links">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/contractors" class="nav-link">Find Contractors</a>
+          
+          <!-- Categories Dropdown -->
+          <div class="nav-dropdown">
+            <a href="/categories" class="nav-link dropdown-toggle">
+              Categories
+              <span class="dropdown-arrow">▼</span>
+            </a>
+            <div class="dropdown-menu">
+              <a href="/categories/plumbing" class="dropdown-item">
+                <span class="dropdown-icon">🔧</span>
+                Plumbing
+              </a>
+              <a href="/categories/electrical" class="dropdown-item">
+                <span class="dropdown-icon">⚡</span>
+                Electrical
+              </a>
+              <a href="/categories/roofing" class="dropdown-item">
+                <span class="dropdown-icon">🏠</span>
+                Roofing
+              </a>
+              <a href="/categories/hvac" class="dropdown-item">
+                <span class="dropdown-icon">❄️</span>
+                HVAC
+              </a>
+              <a href="/categories/general-contractor" class="dropdown-item">
+                <span class="dropdown-icon">🏗️</span>
+                General Contractors
+              </a>
+              <a href="/categories/landscaping" class="dropdown-item">
+                <span class="dropdown-icon">🌿</span>
+                Landscaping
+              </a>
+              <a href="/categories/painting" class="dropdown-item">
+                <span class="dropdown-icon">🎨</span>
+                Painting
+              </a>
+              <a href="/categories/flooring" class="dropdown-item">
+                <span class="dropdown-icon">🏢</span>
+                Flooring
+              </a>
+            </div>
+          </div>
+
+          <a href="/blog" class="nav-link">Tips & Advice</a>
+          <a href="/contractors" class="nav-link nav-cta">Get Quotes</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .navbar {
+    padding: var(--space-4) 0;
+  }
+
+  .nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Brand */
+  .nav-brand {
+    flex-shrink: 0;
+  }
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--gray-900);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+  }
+
+  .brand-link:hover {
+    text-decoration: none;
+    color: var(--primary-600);
+  }
+
+  .brand-icon {
+    font-size: var(--font-size-2xl);
+  }
+
+  .brand-text {
+    white-space: nowrap;
+  }
+
+  /* Mobile Menu Button */
+  .mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    gap: 4px;
+  }
+
+  .hamburger {
+    width: 24px;
+    height: 3px;
+    background: var(--gray-700);
+    transition: var(--transition);
+    border-radius: 2px;
+  }
+
+  .mobile-menu-btn.active .hamburger:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+
+  .mobile-menu-btn.active .hamburger:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-btn.active .hamburger:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+
+  /* Navigation Links */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .nav-link {
+    color: var(--gray-700);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    color: var(--primary-600);
+    text-decoration: none;
+    background: var(--primary-50);
+  }
+
+  .nav-cta {
+    background: var(--primary-600);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-cta:hover {
+    background: var(--primary-700);
+    color: white;
+  }
+
+  /* Dropdown */
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .dropdown-arrow {
+    font-size: var(--font-size-xs);
+    transition: var(--transition);
+  }
+
+  .nav-dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 220px;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius);
+    padding: var(--space-3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1001;
+  }
+
+  .nav-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    color: var(--gray-700);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+  }
+
+  .dropdown-item:hover {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    text-decoration: none;
+  }
+
+  .dropdown-icon {
+    font-size: var(--font-size-base);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .nav-links {
+      gap: var(--space-4);
+    }
+
+    .brand-text {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .mobile-menu-btn {
+      display: flex;
+    }
+
+    .nav-links {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: var(--space-4);
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .nav-links.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav-link {
+      padding: var(--space-3);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .nav-link:last-child {
+      border-bottom: none;
+    }
+
+    .nav-dropdown .dropdown-menu {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      box-shadow: none;
+      background: var(--gray-50);
+      margin-top: var(--space-2);
+    }
+
+    .dropdown-toggle .dropdown-arrow {
+      display: none;
+    }
+
+    .brand-text {
+      display: inline;
+      font-size: var(--font-size-base);
+    }
+  }
+</style>
+
+<script>
+  function toggleMobileMenu() {
+    const navLinks = document.getElementById('nav-links');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    
+    navLinks.classList.toggle('active');
+    menuBtn.classList.toggle('active');
+  }
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', function(event) {
+    const navLinks = document.getElementById('nav-links');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const navbar = document.querySelector('.navbar');
+    
+    if (!navbar.contains(event.target)) {
+      navLinks.classList.remove('active');
+      menuBtn.classList.remove('active');
+    }
+  });
+
+  // Close mobile menu when window is resized to desktop
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      const navLinks = document.getElementById('nav-links');
+      const menuBtn = document.querySelector('.mobile-menu-btn');
+      
+      navLinks.classList.remove('active');
+      menuBtn.classList.remove('active');
+    }
+  });
+</script>

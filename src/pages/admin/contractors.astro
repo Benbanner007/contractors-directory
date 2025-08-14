@@ -1,0 +1,374 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { contractorDb } from '../../lib/database';
+
+const contractors = contractorDb.getAll();
+---
+
+<BaseLayout title="Admin - Manage Contractors" description="Manage contractor database">
+  <div class="admin-page">
+    <div class="container">
+      <div class="admin-header">
+        <h1>Manage Contractors</h1>
+        <div class="admin-actions">
+          <button class="btn-primary" onclick="showAddForm()">Add New Contractor</button>
+          <a href="/admin/export" class="btn-secondary">Export Data</a>
+        </div>
+      </div>
+
+      <div class="contractors-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Business Name</th>
+              <th>Owner</th>
+              <th>Category</th>
+              <th>Location</th>
+              <th>Rating</th>
+              <th>Reviews</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contractors.map(contractor => (
+              <tr>
+                <td>{contractor.businessName}</td>
+                <td>{contractor.name}</td>
+                <td>{contractor.category}</td>
+                <td>{contractor.address.city}, {contractor.address.state}</td>
+                <td>{contractor.rating} ⭐</td>
+                <td>{contractor.reviewCount}</td>
+                <td>
+                  <div class="actions">
+                    <button class="btn-edit" onclick={`editContractor('${contractor.id}')`}>Edit</button>
+                    <button class="btn-delete" onclick={`deleteContractor('${contractor.id}')`}>Delete</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Form Modal -->
+  <div id="contractor-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Add New Contractor</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="contractor-form">
+        <input type="hidden" id="contractor-id" />
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="business-name">Business Name</label>
+            <input type="text" id="business-name" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="owner-name">Owner Name</label>
+            <input type="text" id="owner-name" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" required>
+              <option value="plumbing">Plumbing</option>
+              <option value="electrical">Electrical</option>
+              <option value="roofing">Roofing</option>
+              <option value="hvac">HVAC</option>
+              <option value="general-contractor">General Contractor</option>
+              <option value="landscaping">Landscaping</option>
+              <option value="painting">Painting</option>
+              <option value="flooring">Flooring</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="website">Website</label>
+            <input type="url" id="website" />
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" rows="3" required></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Contractor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .admin-page {
+    padding: var(--space-8) 0;
+    min-height: 100vh;
+    background: var(--gray-50);
+  }
+  
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-4);
+    border-bottom: 2px solid var(--gray-200);
+  }
+  
+  .admin-header h1 {
+    font-size: var(--font-size-3xl);
+    color: var(--gray-900);
+  }
+  
+  .admin-actions {
+    display: flex;
+    gap: var(--space-3);
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background: var(--primary-600);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: var(--primary-700);
+  }
+  
+  .btn-secondary {
+    background: white;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--gray-50);
+  }
+  
+  .contractors-table {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  
+  th {
+    background: var(--gray-50);
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+  
+  .actions {
+    display: flex;
+    gap: var(--space-2);
+  }
+  
+  .btn-edit, .btn-delete {
+    padding: var(--space-1) var(--space-3);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .btn-edit {
+    background: var(--blue-100);
+    color: var(--blue-800);
+  }
+  
+  .btn-edit:hover {
+    background: var(--blue-200);
+  }
+  
+  .btn-delete {
+    background: var(--red-100);
+    color: var(--red-800);
+  }
+  
+  .btn-delete:hover {
+    background: var(--red-200);
+  }
+  
+  /* Modal Styles */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    color: var(--gray-500);
+  }
+  
+  .close-btn:hover {
+    color: var(--gray-700);
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    padding: var(--space-6);
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    color: var(--gray-700);
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: var(--space-3);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    border-top: 1px solid var(--gray-200);
+  }
+  
+  .btn-cancel, .btn-save {
+    padding: var(--space-3) var(--space-6);
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .btn-cancel {
+    background: var(--gray-200);
+    color: var(--gray-700);
+  }
+  
+  .btn-cancel:hover {
+    background: var(--gray-300);
+  }
+  
+  .btn-save {
+    background: var(--primary-600);
+    color: white;
+  }
+  
+  .btn-save:hover {
+    background: var(--primary-700);
+  }
+</style>
+
+<script>
+  function showAddForm() {
+    document.getElementById('modal-title').textContent = 'Add New Contractor';
+    document.getElementById('contractor-form').reset();
+    document.getElementById('contractor-id').value = '';
+    document.getElementById('contractor-modal').style.display = 'flex';
+  }
+  
+  function editContractor(id) {
+    // In a real app, fetch contractor data and populate form
+    document.getElementById('modal-title').textContent = 'Edit Contractor';
+    document.getElementById('contractor-id').value = id;
+    document.getElementById('contractor-modal').style.display = 'flex';
+  }
+  
+  function deleteContractor(id) {
+    if (confirm('Are you sure you want to delete this contractor?')) {
+      // Implement delete functionality
+      console.log('Deleting contractor:', id);
+    }
+  }
+  
+  function closeModal() {
+    document.getElementById('contractor-modal').style.display = 'none';
+  }
+  
+  // Form submission
+  document.getElementById('contractor-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Implement save functionality
+    console.log('Saving contractor...');
+    closeModal();
+  });
+</script>

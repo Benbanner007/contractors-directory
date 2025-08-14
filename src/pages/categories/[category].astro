@@ -1,0 +1,505 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContractorCard from '../../components/contractor/ContractorCard.astro';
+import { contractorDb } from '../../lib/database';
+import { categories } from '../../data/contractors';
+
+export async function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: { categoryData: category },
+  }));
+}
+
+const { category } = Astro.params;
+const { categoryData } = Astro.props;
+
+// Get contractors for this category
+const contractors = contractorDb.getByCategory(categoryData.id);
+
+const title = `${categoryData.name} Contractors in Triangle Area | Licensed & Insured`;
+const description = `Find trusted ${categoryData.name.toLowerCase()} contractors in Raleigh, Durham, Chapel Hill. Licensed, insured, and background-checked professionals.`;
+
+// Category-specific content
+const categoryInfo = {
+  plumbing: {
+    icon: '🔧',
+    heroTitle: 'Expert Plumbing Services',
+    heroDescription: 'From emergency repairs to complete bathroom renovations, our licensed plumbers handle all your plumbing needs.',
+    services: ['Emergency Repairs', 'Pipe Installation', 'Water Heater Service', 'Bathroom Remodels', 'Drain Cleaning', 'Leak Detection'],
+    tips: [
+      'Check for leaks regularly to prevent water damage',
+      'Know where your main water shutoff valve is located',
+      'Avoid chemical drain cleaners that can damage pipes',
+      'Schedule annual water heater maintenance'
+    ]
+  },
+  electrical: {
+    icon: '⚡',
+    heroTitle: 'Licensed Electrical Contractors',
+    heroDescription: 'Safe, reliable electrical work from panel upgrades to smart home installations by certified electricians.',
+    services: ['Panel Upgrades', 'Outlet Installation', 'Lighting Design', 'Smart Home Wiring', 'Electrical Repairs', 'Code Compliance'],
+    tips: [
+      'Never attempt electrical work without proper training',
+      'Test GFCI outlets monthly for safety',
+      'Upgrade old aluminum wiring to copper',
+      'Install surge protectors for valuable electronics'
+    ]
+  },
+  roofing: {
+    icon: '🏠',
+    heroTitle: 'Professional Roofing Contractors',
+    heroDescription: 'Quality roofing solutions from repairs to complete roof replacements, working with all insurance companies.',
+    services: ['Roof Repairs', 'Roof Replacement', 'Storm Damage', 'Gutter Installation', 'Roof Inspections', 'Insurance Claims'],
+    tips: [
+      'Inspect your roof twice yearly for damage',
+      'Clean gutters regularly to prevent ice dams',
+      'Address small leaks immediately to prevent major damage',
+      'Document roof condition for insurance purposes'
+    ]
+  },
+  hvac: {
+    icon: '❄️',
+    heroTitle: 'HVAC Heating & Cooling Experts',
+    heroDescription: 'Complete heating and cooling solutions for year-round comfort in the Triangle\'s variable climate.',
+    services: ['AC Installation', 'Heating Repair', 'Duct Cleaning', 'System Maintenance', 'Energy Audits', 'Indoor Air Quality'],
+    tips: [
+      'Change HVAC filters every 1-3 months',
+      'Schedule bi-annual system maintenance',
+      'Keep outdoor units clear of debris',
+      'Use programmable thermostats to save energy'
+    ]
+  },
+  'general-contractor': {
+    icon: '🏗️',
+    heroTitle: 'General Contractors & Builders',
+    heroDescription: 'Full-service contractors for home renovations, additions, and new construction projects.',
+    services: ['Home Renovations', 'Kitchen Remodels', 'Bathroom Remodels', 'Room Additions', 'Custom Homes', 'Commercial Work'],
+    tips: [
+      'Get detailed written contracts for all work',
+      'Verify contractor licenses and insurance',
+      'Get multiple quotes for major projects',
+      'Plan for 10-20% budget overrun on renovations'
+    ]
+  },
+  landscaping: {
+    icon: '🌿',
+    heroTitle: 'Landscape Design & Installation',
+    heroDescription: 'Transform your outdoor space with professional landscaping, hardscaping, and maintenance services.',
+    services: ['Landscape Design', 'Hardscaping', 'Irrigation Systems', 'Tree Services', 'Lawn Care', 'Outdoor Lighting'],
+    tips: [
+      'Choose native plants for easier maintenance',
+      'Plan irrigation systems before planting',
+      'Consider seasonal color and bloom times',
+      'Mulch regularly to retain moisture and prevent weeds'
+    ]
+  },
+  painting: {
+    icon: '🎨',
+    heroTitle: 'Professional Painting Services',
+    heroDescription: 'Interior and exterior painting services with quality materials and expert color consultation.',
+    services: ['Interior Painting', 'Exterior Painting', 'Color Consultation', 'Wallpaper Installation', 'Pressure Washing', 'Deck Staining'],
+    tips: [
+      'Proper surface preparation is key to long-lasting paint',
+      'Use high-quality primers for better coverage',
+      'Consider paint sheen based on room function',
+      'Test paint colors in different lighting conditions'
+    ]
+  },
+  flooring: {
+    icon: '🏢',
+    heroTitle: 'Flooring Installation Experts',
+    heroDescription: 'Professional flooring installation and refinishing for hardwood, tile, carpet, and luxury vinyl.',
+    services: ['Hardwood Installation', 'Tile Installation', 'Carpet Installation', 'Vinyl Flooring', 'Floor Refinishing', 'Subfloor Repair'],
+    tips: [
+      'Acclimate hardwood flooring before installation',
+      'Choose appropriate flooring for each room\'s moisture level',
+      'Consider traffic patterns when selecting materials',
+      'Maintain proper humidity levels to prevent wood movement'
+    ]
+  }
+};
+
+const info = categoryInfo[categoryData.id] || {
+  icon: '🔨',
+  heroTitle: `${categoryData.name} Contractors`,
+  heroDescription: `Professional ${categoryData.name.toLowerCase()} services in the Triangle area.`,
+  services: [],
+  tips: []
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="category-page">
+    <!-- Hero Section -->
+    <section class="category-hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="category-icon">{info.icon}</div>
+          <h1>{info.heroTitle}</h1>
+          <p class="hero-description">{info.heroDescription}</p>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number">{contractors.length}</span>
+              <span class="stat-label">Verified Contractors</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{contractors.reduce((sum, c) => sum + c.reviewCount, 0)}</span>
+              <span class="stat-label">Total Reviews</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">{contractors.length > 0 ? (contractors.reduce((sum, c) => sum + c.rating, 0) / contractors.length).toFixed(1) : '0'}★</span>
+              <span class="stat-label">Average Rating</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    {info.services.length > 0 && (
+      <section class="services-section">
+        <div class="container">
+          <h2>Common {categoryData.name} Services</h2>
+          <div class="services-grid">
+            {info.services.map(service => (
+              <div class="service-item">
+                <span class="service-icon">✓</span>
+                <span>{service}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Contractors Section -->
+    <section class="contractors-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Licensed {categoryData.name} Contractors</h2>
+          <p>All contractors are licensed, insured, and background-checked</p>
+        </div>
+        
+        {contractors.length > 0 ? (
+          <div class="contractors-grid">
+            {contractors.map(contractor => (
+              <ContractorCard contractor={contractor} />
+            ))}
+          </div>
+        ) : (
+          <div class="no-contractors">
+            <h3>No {categoryData.name} contractors available yet</h3>
+            <p>We're actively recruiting qualified contractors in this category. Check back soon!</p>
+            <a href="/contractors" class="btn-primary">View All Contractors</a>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Tips Section -->
+    {info.tips.length > 0 && (
+      <section class="tips-section">
+        <div class="container">
+          <h2>{categoryData.name} Tips & Advice</h2>
+          <div class="tips-grid">
+            {info.tips.map(tip => (
+              <div class="tip-item">
+                <span class="tip-icon">💡</span>
+                <p>{tip}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Need More Options?</h2>
+          <p>Browse all contractor categories or search by location and specialty.</p>
+          <div class="cta-buttons">
+            <a href="/contractors" class="btn-primary">View All Contractors</a>
+            <a href="/categories" class="btn-secondary">Browse Categories</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .category-page {
+    min-height: 100vh;
+  }
+
+  /* Hero Section */
+  .category-hero {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    color: white;
+    padding: var(--space-16) 0 var(--space-12);
+    text-align: center;
+  }
+
+  .category-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-content h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    line-height: 1.2;
+  }
+
+  .hero-description {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-8);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.95;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .stat-number {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+  }
+
+  .stat-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+  }
+
+  /* Services Section */
+  .services-section {
+    padding: var(--space-16) 0;
+    background: var(--gray-50);
+  }
+
+  .services-section h2 {
+    text-align: center;
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-8);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .service-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: white;
+    padding: var(--space-4);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .service-icon {
+    color: var(--primary-600);
+    font-weight: bold;
+    font-size: var(--font-size-lg);
+  }
+
+  /* Contractors Section */
+  .contractors-section {
+    padding: var(--space-16) 0;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .section-header h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+  }
+
+  .section-header p {
+    color: var(--gray-600);
+    font-size: var(--font-size-lg);
+  }
+
+  .contractors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .no-contractors {
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    background: var(--gray-50);
+    border-radius: var(--border-radius-lg);
+  }
+
+  .no-contractors h3 {
+    font-size: var(--font-size-xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+  }
+
+  .no-contractors p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-6);
+  }
+
+  /* Tips Section */
+  .tips-section {
+    padding: var(--space-16) 0;
+    background: var(--gray-50);
+  }
+
+  .tips-section h2 {
+    text-align: center;
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-8);
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    background: white;
+    padding: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tip-icon {
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-1);
+  }
+
+  .tip-item p {
+    color: var(--gray-700);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding: var(--space-16) 0;
+    background: white;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .cta-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-content h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+  }
+
+  .cta-content p {
+    color: var(--gray-600);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-6);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .btn-primary {
+    background: var(--primary-600);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-700);
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+
+  .btn-secondary:hover {
+    background: var(--gray-50);
+    text-decoration: none;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .category-hero {
+      padding: var(--space-12) 0 var(--space-8);
+    }
+
+    .hero-content h1 {
+      font-size: var(--font-size-3xl);
+    }
+
+    .hero-stats {
+      gap: var(--space-6);
+    }
+
+    .contractors-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tips-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>

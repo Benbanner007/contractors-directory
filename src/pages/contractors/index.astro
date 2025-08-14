@@ -2,7 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContractorCard from '../../components/contractor/ContractorCard.astro';
 import ContractorFilters from '../../components/contractor/ContractorFilters.astro';
-import { contractors } from '../../data/contractors';
+import { contractorDb } from '../../lib/database';
+
+// Fetch contractors from database
+const contractors = contractorDb.getAll();
 
 const title = "Find Contractors in the Triangle - Licensed & Insured Professionals";
 const description = "Browse our directory of verified contractors in Raleigh, Durham, Chapel Hill and surrounding areas. Find licensed plumbers, electricians, roofers, HVAC specialists and more.";
@@ -133,6 +136,22 @@ const structuredData = {
         </div>
       </div>
     </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-text">
+            <p>&copy; 2024 Triangle Contractors Hub. All rights reserved.</p>
+          </div>
+          <div class="footer-links">
+            <a href="/privacy" class="footer-link">Privacy Policy</a>
+            <a href="/terms" class="footer-link">Terms of Service</a>
+            <a href="/admin/contractors" class="footer-link admin-link">Admin</a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 </BaseLayout>
 
@@ -425,170 +444,293 @@ const structuredData = {
       gap: var(--space-4);
     }
   }
+
+  /* Styles for dynamically generated contractor cards */
+  .contractor-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-6);
+    transition: var(--transition);
+    border: 1px solid var(--gray-200);
+    height: fit-content;
+  }
+  
+  .contractor-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  .contractor-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+  }
+  
+  .contractor-card .contractor-badges {
+    display: flex;
+    gap: var(--space-2);
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .contractor-card .badge {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .contractor-card .badge.licensed {
+    background: var(--green-100);
+    color: var(--green-800);
+  }
+  
+  .contractor-card .badge.insured {
+    background: var(--blue-100);
+    color: var(--blue-800);
+  }
+  
+  .contractor-card .card-content {
+    margin-bottom: var(--space-6);
+  }
+  
+  .contractor-card .business-name {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+    line-height: 1.3;
+  }
+  
+  .contractor-card .contractor-name {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--space-3);
+  }
+  
+  .contractor-card .rating-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  
+  .contractor-card .stars {
+    font-size: var(--font-size-lg);
+    line-height: 1;
+  }
+  
+  .contractor-card .stars-filled {
+    color: var(--yellow-500);
+  }
+  
+  .contractor-card .stars-half {
+    color: var(--yellow-300);
+  }
+  
+  .contractor-card .stars-empty {
+    color: var(--gray-300);
+  }
+  
+  .contractor-card .rating-text {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+  }
+  
+  .contractor-card .specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  
+  .contractor-card .specialty-tag {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+  }
+  
+  .contractor-card .description {
+    color: var(--gray-600);
+    line-height: 1.5;
+    margin-bottom: var(--space-3);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .contractor-card .location, 
+  .contractor-card .service-areas, 
+  .contractor-card .experience {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+  
+  .contractor-card .service-areas {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  
+  .contractor-card .card-footer {
+    border-top: 1px solid var(--gray-200);
+    padding-top: var(--space-4);
+  }
+  
+  .contractor-card .contact-info {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  
+  .contractor-card .phone-link, 
+  .contractor-card .website-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--primary-600);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+  
+  .contractor-card .phone-link:hover, 
+  .contractor-card .website-link:hover {
+    color: var(--primary-700);
+    text-decoration: underline;
+  }
+  
+  .contractor-card .action-buttons {
+    display: flex;
+    gap: var(--space-3);
+  }
+  
+  .contractor-card .btn-quote, 
+  .contractor-card .btn-view {
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+  }
+  
+  .contractor-card .btn-quote {
+    background: var(--primary-600);
+    color: white;
+  }
+  
+  .contractor-card .btn-quote:hover {
+    background: var(--primary-700);
+  }
+  
+  .contractor-card .btn-view {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+  
+  .contractor-card .btn-view:hover {
+    background: var(--gray-200);
+    text-decoration: none;
+  }
+
+  /* Footer */
+  .site-footer {
+    background: var(--gray-900);
+    color: var(--gray-300);
+    padding: var(--space-8) 0;
+    margin-top: var(--space-16);
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .footer-text p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--gray-400);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .footer-link {
+    color: var(--gray-400);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: var(--transition);
+  }
+
+  .footer-link:hover {
+    color: var(--gray-200);
+    text-decoration: none;
+  }
+
+  .footer-link.admin-link {
+    color: var(--gray-500);
+    font-size: var(--font-size-xs);
+    opacity: 0.7;
+  }
+
+  .footer-link.admin-link:hover {
+    color: var(--gray-400);
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
+      gap: var(--space-3);
+    }
+
+    .footer-links {
+      gap: var(--space-4);
+    }
+  }
 </style>
 
-<script>
+<script is:inline define:vars={{ contractors }}>
   // Store original contractors data
-  const allContractors = [
-    {
-      id: '1',
-      name: 'Mike Johnson',
-      businessName: 'Johnson Plumbing Services',
-      category: 'plumbing',
-      specialties: ['Emergency Repairs', 'Kitchen Plumbing', 'Bathroom Remodels'],
-      description: 'Professional plumbing services with over 15 years of experience. We handle everything from simple repairs to complete bathroom renovations.',
-      phone: '(919) 555-0123',
-      email: 'mike@johnsonplumbing.com',
-      website: 'https://johnsonplumbing.com',
-      address: {
-        street: '123 Oak Street',
-        city: 'Raleigh',
-        state: 'NC',
-        zipCode: '27601'
-      },
-      serviceAreas: ['Raleigh', 'Cary', 'Apex', 'Morrisville'],
-      yearsInBusiness: 15,
-      licensed: true,
-      insured: true,
-      certifications: ['NC Licensed Plumber', 'Backflow Prevention'],
-      rating: 4.8,
-      reviewCount: 127,
-      images: {
-        logo: '/images/contractors/johnson-plumbing-logo.jpg',
-        portfolio: ['/images/contractors/johnson-1.jpg', '/images/contractors/johnson-2.jpg']
-      }
-    },
-    {
-      id: '2',
-      name: 'Sarah Thompson',
-      businessName: 'Thompson Electric',
-      category: 'electrical',
-      specialties: ['Home Wiring', 'Panel Upgrades', 'Smart Home Installation'],
-      description: 'Licensed electrician serving the Triangle area for over 12 years. Specializing in residential electrical work and smart home technology.',
-      phone: '(919) 555-0456',
-      email: 'sarah@thompsonelectric.com',
-      website: 'https://thompsonelectric.com',
-      address: {
-        street: '456 Pine Avenue',
-        city: 'Durham',
-        state: 'NC',
-        zipCode: '27701'
-      },
-      serviceAreas: ['Durham', 'Chapel Hill', 'Carrboro', 'Hillsborough'],
-      yearsInBusiness: 12,
-      licensed: true,
-      insured: true,
-      certifications: ['NC Licensed Electrician', 'Tesla Powerwall Certified'],
-      rating: 4.9,
-      reviewCount: 89
-    },
-    {
-      id: '3',
-      name: 'David Rodriguez',
-      businessName: 'Rodriguez Roofing Co.',
-      category: 'roofing',
-      specialties: ['Asphalt Shingles', 'Metal Roofing', 'Storm Damage Repair'],
-      description: 'Family-owned roofing company with 20+ years of experience. We provide quality roofing solutions and work with insurance companies.',
-      phone: '(919) 555-0789',
-      email: 'david@rodriguezroofing.com',
-      website: 'https://rodriguezroofing.com',
-      address: {
-        street: '789 Cedar Lane',
-        city: 'Cary',
-        state: 'NC',
-        zipCode: '27511'
-      },
-      serviceAreas: ['Cary', 'Apex', 'Holly Springs', 'Fuquay-Varina', 'Raleigh'],
-      yearsInBusiness: 22,
-      licensed: true,
-      insured: true,
-      certifications: ['GAF Master Elite', 'Owens Corning Preferred'],
-      rating: 4.7,
-      reviewCount: 156
-    },
-    {
-      id: '4',
-      name: 'Jennifer Lee',
-      businessName: 'Lee HVAC Solutions',
-      category: 'hvac',
-      specialties: ['AC Installation', 'Heating Repair', 'Duct Cleaning'],
-      description: 'Professional HVAC services for residential and commercial properties. Emergency service available 24/7.',
-      phone: '(919) 555-0234',
-      email: 'jennifer@leehvac.com',
-      website: 'https://leehvac.com',
-      address: {
-        street: '234 Maple Drive',
-        city: 'Chapel Hill',
-        state: 'NC',
-        zipCode: '27514'
-      },
-      serviceAreas: ['Chapel Hill', 'Durham', 'Carrboro', 'Pittsboro'],
-      yearsInBusiness: 8,
-      licensed: true,
-      insured: true,
-      certifications: ['EPA Certified', 'NATE Certified'],
-      rating: 4.6,
-      reviewCount: 73
-    },
-    {
-      id: '5',
-      name: 'Robert Wilson',
-      businessName: 'Wilson General Contracting',
-      category: 'general-contractor',
-      specialties: ['Kitchen Remodels', 'Bathroom Renovations', 'Home Additions'],
-      description: 'Full-service general contractor specializing in home renovations and additions. Licensed and bonded with 18 years of experience.',
-      phone: '(919) 555-0567',
-      email: 'robert@wilsoncontracting.com',
-      website: 'https://wilsoncontracting.com',
-      address: {
-        street: '567 Birch Street',
-        city: 'Apex',
-        state: 'NC',
-        zipCode: '27502'
-      },
-      serviceAreas: ['Apex', 'Cary', 'Holly Springs', 'Morrisville', 'Raleigh'],
-      yearsInBusiness: 18,
-      licensed: true,
-      insured: true,
-      certifications: ['NC General Contractor License', 'OSHA 30-Hour'],
-      rating: 4.8,
-      reviewCount: 201
-    },
-    {
-      id: '6',
-      name: 'Lisa Chen',
-      businessName: 'Chen Landscaping & Design',
-      category: 'landscaping',
-      specialties: ['Landscape Design', 'Hardscaping', 'Irrigation Systems'],
-      description: 'Creative landscape design and installation services. Transforming outdoor spaces with beautiful, sustainable designs.',
-      phone: '(919) 555-0890',
-      email: 'lisa@chenlandscaping.com',
-      website: 'https://chenlandscaping.com',
-      address: {
-        street: '890 Willow Way',
-        city: 'Morrisville',
-        state: 'NC',
-        zipCode: '27560'
-      },
-      serviceAreas: ['Morrisville', 'Cary', 'Apex', 'Raleigh', 'Durham'],
-      yearsInBusiness: 10,
-      licensed: true,
-      insured: true,
-      certifications: ['Certified Landscape Professional', 'Irrigation Association Certified'],
-      rating: 4.9,
-      reviewCount: 68
-    }
-  ];
-
+  const allContractors = contractors;
   let filteredContractors = [...allContractors];
+  
+  console.log('Contractors loaded:', allContractors.length);
 
   // Listen for filter events
-  window.addEventListener('contractorFilter', (event: any) => {
+  window.addEventListener('contractorFilter', (event) => {
+    console.log('Filter event received:', event.detail);
     const filters = event.detail;
     applyFilters(filters);
   });
 
-  function applyFilters(filters: any) {
+  function applyFilters(filters) {
+    console.log('Applying filters:', filters);
     filteredContractors = allContractors.filter(contractor => {
       // Search term filter
       if (filters.searchTerm) {
@@ -632,7 +774,7 @@ const structuredData = {
   }
 
   function sortContractors() {
-    const sortBy = (document.getElementById('sort-select') as HTMLSelectElement).value;
+    const sortBy = document.getElementById('sort-select').value;
     
     filteredContractors.sort((a, b) => {
       switch (sortBy) {
@@ -653,21 +795,22 @@ const structuredData = {
   }
 
   function updateDisplay() {
+    console.log('Updating display with', filteredContractors.length, 'contractors');
     const grid = document.getElementById('contractors-grid');
     const noResults = document.getElementById('no-results');
     const resultsCount = document.getElementById('results-count');
     
     if (filteredContractors.length === 0) {
-      grid!.style.display = 'none';
-      noResults!.style.display = 'block';
-      resultsCount!.textContent = 'No contractors found';
+      grid.style.display = 'none';
+      noResults.style.display = 'block';
+      resultsCount.textContent = 'No contractors found';
     } else {
-      grid!.style.display = 'grid';
-      noResults!.style.display = 'none';
-      resultsCount!.textContent = `Showing ${filteredContractors.length} contractor${filteredContractors.length !== 1 ? 's' : ''}`;
+      grid.style.display = 'grid';
+      noResults.style.display = 'none';
+      resultsCount.textContent = `Showing ${filteredContractors.length} contractor${filteredContractors.length !== 1 ? 's' : ''}`;
       
       // Update grid HTML (simplified version - in a real app you'd use a more sophisticated approach)
-      grid!.innerHTML = filteredContractors.map(contractor => {
+      grid.innerHTML = filteredContractors.map(contractor => {
         const stars = getStarRating(contractor.rating);
         return `
           <div class="contractor-card">
@@ -722,7 +865,7 @@ const structuredData = {
     }
   }
 
-  function getStarRating(rating: number) {
+  function getStarRating(rating) {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
@@ -734,8 +877,15 @@ const structuredData = {
     };
   }
 
-  // Global function for clearing filters (called from filters component)
-  (window as any).clearAllFilters = function() {
+  // Initialize display on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, initializing display...');
+    updateDisplay();
+  });
+
+  // Make functions available globally
+  window.sortContractors = sortContractors;
+  window.clearAllFilters = function() {
     filteredContractors = [...allContractors];
     updateDisplay();
   }

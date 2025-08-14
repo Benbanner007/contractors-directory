@@ -2,6 +2,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SearchBar from '../components/ui/SearchBar.astro';
 import CategoryGrid from '../components/contractor/CategoryGrid.astro';
+import { contractorDb } from '../lib/database';
+
+// Get real data from database
+const allContractors = contractorDb.getAll();
+const totalReviews = allContractors.reduce((sum, c) => sum + c.reviewCount, 0);
+const avgRating = allContractors.length > 0 
+  ? (allContractors.reduce((sum, c) => sum + c.rating, 0) / allContractors.length).toFixed(1)
+  : '0';
 
 const title = "Triangle Contractors Hub - Find Trusted Local Contractors in Raleigh, Durham & Chapel Hill";
 const description = "Connect with vetted, licensed contractors in the Triangle area. Get quotes from top-rated plumbers, electricians, roofers, and more. Serving Raleigh, Durham, Chapel Hill, and surrounding areas.";
@@ -61,15 +69,15 @@ const structuredData = {
         
         <div class="hero-stats">
           <div class="stat">
-            <span class="stat-number">1,200+</span>
+            <span class="stat-number">{allContractors.length}+</span>
             <span class="stat-label">Verified Contractors</span>
           </div>
           <div class="stat">
-            <span class="stat-number">15,000+</span>
-            <span class="stat-label">Projects Completed</span>
+            <span class="stat-number">{totalReviews}+</span>
+            <span class="stat-label">Customer Reviews</span>
           </div>
           <div class="stat">
-            <span class="stat-number">4.8★</span>
+            <span class="stat-number">{avgRating}★</span>
             <span class="stat-label">Average Rating</span>
           </div>
         </div>

@@ -6,9 +6,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "migrate": "tsx scripts/migrate-data.ts",
+    "add-sample": "tsx scripts/add-sample-contractor.ts",
+    "add-contractor": "tsx scripts/add-contractor-interactive.ts"
   },
   "dependencies": {
-    "astro": "^5.12.9"
+    "@types/better-sqlite3": "^7.6.13",
+    "astro": "^5.12.9",
+    "better-sqlite3": "^12.2.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.4"
   }
 }

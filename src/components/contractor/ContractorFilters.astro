@@ -17,13 +17,19 @@ const serviceAreas = [
   
   <div class="filter-section">
     <label for="search-input" class="filter-label">Search</label>
-    <input 
-      type="text" 
-      id="search-input"
-      placeholder="Search by name, business, or specialty..."
-      class="search-input"
-      oninput="filterContractors()"
-    />
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="search-input"
+        placeholder="Search by name, business, or specialty..."
+        class="search-input"
+        oninput="filterContractors()"
+        onkeypress="handleSearchKeypress(event)"
+      />
+      <button type="button" class="search-button" onclick="filterContractors()">
+        🔍
+      </button>
+    </div>
   </div>
   
   <div class="filter-section">
@@ -146,13 +152,45 @@ const serviceAreas = [
     font-size: var(--font-size-sm);
   }
   
+  .search-container {
+    display: flex;
+    gap: var(--space-2);
+    align-items: stretch;
+  }
+
   .search-input, .filter-select {
-    width: 100%;
     padding: var(--space-3);
     border: 1px solid var(--gray-300);
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     transition: var(--transition);
+  }
+
+  .search-input {
+    flex: 1;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .search-button {
+    background: var(--primary-600);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: var(--space-3);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: var(--font-size-base);
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-button:hover {
+    background: var(--primary-700);
   }
   
   .search-input:focus, .filter-select:focus {
@@ -245,6 +283,7 @@ const serviceAreas = [
 
 <script>
   function filterContractors() {
+    console.log('filterContractors called');
     const searchTerm = (document.getElementById('search-input') as HTMLInputElement)?.value.toLowerCase() || '';
     const selectedCategory = (document.getElementById('category-select') as HTMLSelectElement)?.value || '';
     const selectedLocation = (document.getElementById('location-select') as HTMLSelectElement)?.value || '';
@@ -256,6 +295,16 @@ const serviceAreas = [
     const licensedRequired = (document.getElementById('licensed-filter') as HTMLInputElement)?.checked || false;
     const insuredRequired = (document.getElementById('insured-filter') as HTMLInputElement)?.checked || false;
     
+    console.log('Dispatching filter event with:', {
+      searchTerm,
+      selectedCategory,
+      selectedLocation,
+      minRating,
+      selectedExperience,
+      licensedRequired,
+      insuredRequired
+    });
+
     // Dispatch custom event with filter criteria
     window.dispatchEvent(new CustomEvent('contractorFilter', {
       detail: {
@@ -282,4 +331,16 @@ const serviceAreas = [
     
     filterContractors();
   }
+  
+  function handleSearchKeypress(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      filterContractors();
+    }
+  }
+
+  // Make functions available globally
+  (window as any).filterContractors = filterContractors;
+  (window as any).clearAllFilters = clearAllFilters;
+  (window as any).handleSearchKeypress = handleSearchKeypress;
 </script>
