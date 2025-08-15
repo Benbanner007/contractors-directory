@@ -1,0 +1,671 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { contractorDb } from '../../lib/database';
+
+export async function getStaticPaths() {
+  const contractors = contractorDb.getAll();
+  return contractors.map((contractor) => ({
+    params: { id: contractor.id },
+    props: { contractor },
+  }));
+}
+
+const { contractor } = Astro.props;
+
+if (!contractor) {
+  return Astro.redirect('/contractors');
+}
+
+const title = `${contractor.businessName} | ${contractor.name} | Licensed Contractor`;
+const description = `Contact ${contractor.businessName} for ${contractor.specialties.join(', ')} services in ${contractor.address.city}, ${contractor.address.state}. Licensed, insured, and ${contractor.yearsInBusiness} years of experience.`;
+
+// Helper function to format rating stars
+const getStarRating = (rating: number) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  
+  return {
+    full: '★'.repeat(fullStars),
+    half: hasHalfStar ? '☆' : '',
+    empty: '☆'.repeat(emptyStars)
+  };
+};
+
+const stars = getStarRating(contractor.rating);
+
+// Format business hours
+const formatBusinessHours = (hours: any) => {
+  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  return days.map(day => ({
+    day: day.charAt(0).toUpperCase() + day.slice(1),
+    hours: hours[day]
+  }));
+};
+
+const businessHours = formatBusinessHours(contractor.businessHours);
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="contractor-profile">
+    <!-- Hero Section -->
+    <section class="profile-hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="contractor-header">
+            {contractor.images.logo && (
+              <img 
+                src={contractor.images.logo} 
+                alt={`${contractor.businessName} logo`}
+                class="contractor-logo"
+              />
+            )}
+            <div class="contractor-info">
+              <h1>{contractor.businessName}</h1>
+              <p class="contractor-name">by {contractor.name}</p>
+              <div class="contractor-badges">
+                {contractor.licensed && <span class="badge licensed">Licensed</span>}
+                {contractor.insured && <span class="badge insured">Insured</span>}
+              </div>
+            </div>
+          </div>
+          
+          <div class="rating-section">
+            <div class="stars">
+              <span class="stars-filled">{stars.full}</span>
+              <span class="stars-half">{stars.half}</span>
+              <span class="stars-empty">{stars.empty}</span>
+            </div>
+            <span class="rating-text">{contractor.rating} ({contractor.reviewCount} reviews)</span>
+          </div>
+          
+          <div class="quick-actions">
+            <a href={`tel:${contractor.phone}`} class="btn-primary">
+              📞 Call Now
+            </a>
+            <a href={`/quote/${contractor.id}`} class="btn-secondary">
+              Get Free Quote
+            </a>
+            {contractor.website && (
+              <a href={contractor.website} target="_blank" rel="noopener" class="btn-outline">
+                🌐 Visit Website
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="profile-content">
+      <div class="container">
+        <div class="content-grid">
+          <!-- Left Column -->
+          <div class="main-content">
+            <!-- About Section -->
+            <div class="content-section">
+              <h2>About {contractor.businessName}</h2>
+              <p class="description">{contractor.description}</p>
+              <div class="experience-highlight">
+                <span class="experience-icon">🏆</span>
+                <span>{contractor.yearsInBusiness} years of professional experience</span>
+              </div>
+            </div>
+
+            <!-- Specialties Section -->
+            <div class="content-section">
+              <h2>Our Services</h2>
+              <div class="specialties-grid">
+                {contractor.specialties.map(specialty => (
+                  <div class="specialty-item">
+                    <span class="specialty-icon">✓</span>
+                    <span>{specialty}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Service Areas -->
+            <div class="content-section">
+              <h2>Service Areas</h2>
+              <div class="service-areas-grid">
+                {contractor.serviceAreas.map(area => (
+                  <div class="service-area-item">{area}</div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Certifications -->
+            {contractor.certifications.length > 0 && (
+              <div class="content-section">
+                <h2>Certifications & Licenses</h2>
+                <div class="certifications-list">
+                  {contractor.certifications.map(cert => (
+                    <div class="certification-item">
+                      <span class="cert-icon">🏅</span>
+                      <span>{cert}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Portfolio -->
+            {contractor.images.portfolio && contractor.images.portfolio.length > 0 && (
+              <div class="content-section">
+                <h2>Recent Work</h2>
+                <div class="portfolio-grid">
+                  {contractor.images.portfolio.map((image, index) => (
+                    <img 
+                      src={image} 
+                      alt={`${contractor.businessName} work example ${index + 1}`}
+                      class="portfolio-image"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <!-- Right Sidebar -->
+          <div class="sidebar">
+            <!-- Contact Info -->
+            <div class="contact-card">
+              <h3>Contact Information</h3>
+              
+              <div class="contact-item">
+                <span class="contact-icon">📞</span>
+                <div>
+                  <strong>Phone</strong>
+                  <a href={`tel:${contractor.phone}`}>{contractor.phone}</a>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">✉️</span>
+                <div>
+                  <strong>Email</strong>
+                  <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">📍</span>
+                <div>
+                  <strong>Address</strong>
+                  <address>
+                    {contractor.address.street}<br/>
+                    {contractor.address.city}, {contractor.address.state} {contractor.address.zipCode}
+                  </address>
+                </div>
+              </div>
+
+              {contractor.website && (
+                <div class="contact-item">
+                  <span class="contact-icon">🌐</span>
+                  <div>
+                    <strong>Website</strong>
+                    <a href={contractor.website} target="_blank" rel="noopener">Visit Website</a>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <!-- Business Hours -->
+            <div class="hours-card">
+              <h3>Business Hours</h3>
+              <div class="hours-list">
+                {businessHours.map(({ day, hours }) => (
+                  <div class="hours-item">
+                    <span class="day">{day}</span>
+                    <span class="time">
+                      {hours.closed ? 'Closed' : `${hours.open} - ${hours.close}`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Social Media -->
+            {(contractor.social?.facebook || contractor.social?.instagram || contractor.social?.linkedin) && (
+              <div class="social-card">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                  {contractor.social.facebook && (
+                    <a href={contractor.social.facebook} target="_blank" rel="noopener" class="social-link">
+                      📘 Facebook
+                    </a>
+                  )}
+                  {contractor.social.instagram && (
+                    <a href={contractor.social.instagram} target="_blank" rel="noopener" class="social-link">
+                      📷 Instagram
+                    </a>
+                  )}
+                  {contractor.social.linkedin && (
+                    <a href={contractor.social.linkedin} target="_blank" rel="noopener" class="social-link">
+                      💼 LinkedIn
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .contractor-profile {
+    min-height: 100vh;
+  }
+
+  /* Hero Section */
+  .profile-hero {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    color: white;
+    padding: var(--space-16) 0;
+  }
+
+  .contractor-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .contractor-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--border-radius-lg);
+    object-fit: cover;
+    border: 4px solid white;
+  }
+
+  .contractor-info h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+    line-height: 1.2;
+  }
+
+  .contractor-name {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+    margin-bottom: var(--space-4);
+  }
+
+  .contractor-badges {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .badge {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 2px solid;
+  }
+
+  .badge.licensed {
+    background: var(--success-500);
+    color: white;
+    border-color: var(--success-500);
+  }
+
+  .badge.insured {
+    background: white;
+    color: var(--primary-900);
+    border-color: white;
+  }
+
+  .rating-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  .stars {
+    font-size: var(--font-size-2xl);
+    line-height: 1;
+  }
+
+  .stars-filled {
+    color: var(--warning-400);
+  }
+
+  .stars-half {
+    color: var(--warning-400);
+    opacity: 0.6;
+  }
+
+  .stars-empty {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .rating-text {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .btn-primary, .btn-secondary, .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: white;
+    color: var(--primary-900);
+    border-color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-100);
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    background: var(--primary-900);
+    color: white;
+    border-color: var(--primary-900);
+  }
+
+  .btn-secondary:hover {
+    background: var(--primary-800);
+    border-color: var(--primary-800);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: white;
+    border-color: white;
+  }
+
+  .btn-outline:hover {
+    background: white;
+    color: var(--primary-900);
+    text-decoration: none;
+  }
+
+  /* Main Content */
+  .profile-content {
+    padding: var(--space-16) 0;
+    background: var(--gray-50);
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-12);
+  }
+
+  .content-section {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
+    margin-bottom: var(--space-8);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .content-section h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-6);
+    border-bottom: 2px solid var(--primary-100);
+    padding-bottom: var(--space-3);
+  }
+
+  .description {
+    color: var(--gray-700);
+    line-height: 1.6;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-4);
+  }
+
+  .experience-highlight {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--primary-50);
+    border-radius: var(--border-radius);
+    color: var(--primary-900);
+    font-weight: 600;
+  }
+
+  .specialties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .specialty-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--gray-50);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+  }
+
+  .specialty-icon {
+    color: var(--success-500);
+    font-weight: bold;
+  }
+
+  .service-areas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .service-area-item {
+    padding: var(--space-3);
+    background: var(--primary-50);
+    color: var(--primary-900);
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid var(--primary-200);
+  }
+
+  .certifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .certification-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--warning-50);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--warning-200);
+  }
+
+  .cert-icon {
+    font-size: var(--font-size-lg);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .portfolio-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .contact-card, .hours-card, .social-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .contact-card h3, .hours-card h3, .social-card h3 {
+    font-size: var(--font-size-lg);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: var(--space-2);
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .contact-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact-icon {
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-1);
+  }
+
+  .contact-item strong {
+    display: block;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+  }
+
+  .contact-item a {
+    color: var(--primary-600);
+    text-decoration: none;
+  }
+
+  .contact-item a:hover {
+    text-decoration: underline;
+  }
+
+  .contact-item address {
+    font-style: normal;
+    color: var(--gray-600);
+    line-height: 1.4;
+  }
+
+  .hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .hours-item {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .hours-item:last-child {
+    border-bottom: none;
+  }
+
+  .day {
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  .time {
+    color: var(--gray-600);
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    color: var(--primary-600);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+  }
+
+  .social-link:hover {
+    background: var(--primary-50);
+    text-decoration: none;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .contractor-header {
+      flex-direction: column;
+      text-align: center;
+      gap: var(--space-4);
+    }
+
+    .contractor-logo {
+      width: 100px;
+      height: 100px;
+    }
+
+    .contractor-info h1 {
+      font-size: var(--font-size-3xl);
+    }
+
+    .quick-actions {
+      justify-content: center;
+    }
+
+    .specialties-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .service-areas-grid {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .portfolio-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

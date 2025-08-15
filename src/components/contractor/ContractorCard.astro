@@ -87,8 +87,8 @@ const stars = getStarRating(contractor.rating);
     </div>
     
     <div class="action-buttons">
-      <button class="btn-quote">Get Quote</button>
-      <a href={`/contractors/${contractor.category}/${contractor.id}`} class="btn-view">
+      <a href={`/quote/${contractor.id}`} class="btn-quote">Get Quote</a>
+      <a href={`/contractors/${contractor.id}`} class="btn-view">
         View Profile
       </a>
     </div>
@@ -98,8 +98,8 @@ const stars = getStarRating(contractor.rating);
 <style>
   .contractor-card {
     background: white;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
     padding: var(--space-6);
     transition: var(--transition);
     border: 1px solid var(--gray-200);
@@ -107,8 +107,8 @@ const stars = getStarRating(contractor.rating);
   }
   
   .contractor-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
   
   .card-header {
@@ -135,20 +135,23 @@ const stars = getStarRating(contractor.rating);
   
   .badge {
     padding: var(--space-1) var(--space-2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius);
     font-size: var(--font-size-xs);
     font-weight: 600;
     text-transform: uppercase;
+    border: 1px solid;
   }
   
   .badge.licensed {
-    background: var(--green-100);
-    color: var(--green-800);
+    background: white;
+    color: var(--success-500);
+    border-color: var(--success-500);
   }
   
   .badge.insured {
-    background: var(--blue-100);
-    color: var(--blue-800);
+    background: white;
+    color: var(--primary-900);
+    border-color: var(--primary-900);
   }
   
   .card-content {
@@ -158,7 +161,7 @@ const stars = getStarRating(contractor.rating);
   .business-name {
     font-size: var(--font-size-xl);
     font-weight: 700;
-    color: var(--gray-900);
+    color: var(--primary-900);
     margin-bottom: var(--space-1);
     line-height: 1.3;
   }
@@ -182,11 +185,12 @@ const stars = getStarRating(contractor.rating);
   }
   
   .stars-filled {
-    color: var(--yellow-500);
+    color: var(--warning-500);
   }
   
   .stars-half {
-    color: var(--yellow-300);
+    color: var(--warning-500);
+    opacity: 0.6;
   }
   
   .stars-empty {
@@ -206,16 +210,17 @@ const stars = getStarRating(contractor.rating);
   }
   
   .specialty-tag {
-    background: var(--primary-50);
-    color: var(--primary-700);
+    background: var(--gray-100);
+    color: var(--primary-900);
     padding: var(--space-1) var(--space-2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius);
     font-size: var(--font-size-xs);
     font-weight: 500;
+    border: 1px solid var(--gray-200);
   }
   
   .description {
-    color: var(--gray-600);
+    color: var(--gray-700);
     line-height: 1.5;
     margin-bottom: var(--space-3);
     display: -webkit-box;
@@ -259,7 +264,7 @@ const stars = getStarRating(contractor.rating);
     display: flex;
     align-items: center;
     gap: var(--space-1);
-    color: var(--primary-600);
+    color: var(--primary-900);
     text-decoration: none;
     font-size: var(--font-size-sm);
     font-weight: 500;
@@ -283,28 +288,34 @@ const stars = getStarRating(contractor.rating);
     text-align: center;
     text-decoration: none;
     transition: var(--transition);
-    border: none;
+    border: 2px solid var(--primary-900);
     cursor: pointer;
     font-size: var(--font-size-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .btn-quote {
-    background: var(--primary-600);
+    background: var(--primary-900);
     color: white;
+    border: 2px solid var(--primary-900);
   }
   
   .btn-quote:hover {
-    background: var(--primary-700);
+    background: white;
+    color: var(--primary-900);
   }
   
   .btn-view {
-    background: var(--gray-100);
-    color: var(--gray-700);
-    border: 1px solid var(--gray-300);
+    background: white;
+    color: var(--primary-900);
+    border: 2px solid var(--primary-900);
   }
   
   .btn-view:hover {
-    background: var(--gray-200);
+    background: var(--primary-900);
+    color: white;
     text-decoration: none;
   }
   

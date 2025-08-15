@@ -3,65 +3,65 @@ import type { ContractorCategory } from '../../types/contractor';
 
 const categories: ContractorCategory[] = [
   {
-    id: '1',
+    id: 'general-contractor',
     name: 'General Contractors',
-    slug: 'general-contractors',
+    slug: 'general-contractor',
     description: 'Full-service construction and renovation experts',
     icon: '🏗️',
     subcategories: ['Home Renovation', 'Commercial Construction', 'Custom Homes']
   },
   {
-    id: '2',
+    id: 'plumbing',
     name: 'Plumbers',
-    slug: 'plumbers',
+    slug: 'plumbing',
     description: 'Water, sewer, and gas line professionals',
     icon: '🔧',
     subcategories: ['Emergency Plumbing', 'Bathroom Renovation', 'Water Heaters']
   },
   {
-    id: '3',
+    id: 'electrical',
     name: 'Electricians',
-    slug: 'electricians',
+    slug: 'electrical',
     description: 'Electrical installation and repair specialists',
     icon: '⚡',
     subcategories: ['Electrical Panels', 'Lighting Installation', 'Smart Home']
   },
   {
-    id: '4',
+    id: 'hvac',
     name: 'HVAC Contractors',
-    slug: 'hvac-contractors',
+    slug: 'hvac',
     description: 'Heating, ventilation, and air conditioning experts',
     icon: '❄️',
     subcategories: ['AC Installation', 'Heating Repair', 'Duct Cleaning']
   },
   {
-    id: '5',
+    id: 'roofing',
     name: 'Roofers',
-    slug: 'roofers',
+    slug: 'roofing',
     description: 'Roof installation, repair, and maintenance',
     icon: '🏠',
     subcategories: ['Roof Replacement', 'Gutter Installation', 'Roof Inspection']
   },
   {
-    id: '6',
+    id: 'flooring',
     name: 'Flooring Contractors',
-    slug: 'flooring-contractors',
+    slug: 'flooring',
     description: 'Hardwood, tile, carpet, and specialty flooring',
     icon: '🪵',
     subcategories: ['Hardwood Installation', 'Tile Work', 'Carpet Installation']
   },
   {
-    id: '7',
+    id: 'landscaping',
     name: 'Landscapers',
-    slug: 'landscapers',
+    slug: 'landscaping',
     description: 'Outdoor design and maintenance professionals',
     icon: '🌿',
     subcategories: ['Lawn Care', 'Garden Design', 'Irrigation Systems']
   },
   {
-    id: '8',
+    id: 'painting',
     name: 'Painters',
-    slug: 'painters',
+    slug: 'painting',
     description: 'Interior and exterior painting specialists',
     icon: '🎨',
     subcategories: ['Interior Painting', 'Exterior Painting', 'Cabinet Refinishing']
@@ -104,7 +104,7 @@ const categories: ContractorCategory[] = [
 <style>
   .category-grid-section {
     padding: var(--space-20) 0;
-    background: var(--gray-50);
+    background: white;
   }
 
   .section-header {
@@ -114,13 +114,13 @@ const categories: ContractorCategory[] = [
 
   .section-header h2 {
     font-size: var(--font-size-3xl);
-    color: var(--gray-900);
+    color: var(--primary-900);
     margin-bottom: var(--space-4);
   }
 
   .section-header p {
     font-size: var(--font-size-lg);
-    color: var(--gray-600);
+    color: var(--gray-700);
     max-width: 600px;
     margin: 0 auto;
   }
@@ -135,7 +135,7 @@ const categories: ContractorCategory[] = [
   .category-card {
     display: block;
     background: white;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius);
     padding: var(--space-6);
     text-decoration: none;
     color: inherit;
@@ -145,9 +145,10 @@ const categories: ContractorCategory[] = [
   }
 
   .category-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
     text-decoration: none;
+    border-color: var(--primary-900);
   }
 
   .category-icon {
@@ -158,9 +159,10 @@ const categories: ContractorCategory[] = [
     justify-content: center;
     width: 80px;
     height: 80px;
-    background: var(--primary-50);
+    background: var(--gray-100);
     border-radius: 50%;
     margin: 0 auto var(--space-4);
+    border: 2px solid var(--gray-200);
   }
 
   .category-content {
@@ -170,12 +172,12 @@ const categories: ContractorCategory[] = [
   .category-name {
     font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--primary-900);
     margin-bottom: var(--space-2);
   }
 
   .category-description {
-    color: var(--gray-600);
+    color: var(--gray-700);
     margin-bottom: var(--space-4);
     font-size: var(--font-size-sm);
   }
@@ -192,11 +194,12 @@ const categories: ContractorCategory[] = [
 
   .category-subcategories li {
     background: var(--gray-100);
-    color: var(--gray-700);
+    color: var(--primary-900);
     padding: var(--space-1) var(--space-3);
     border-radius: var(--border-radius);
     font-size: var(--font-size-xs);
     font-weight: 500;
+    border: 1px solid var(--gray-200);
   }
 
   .view-all-categories {
@@ -207,15 +210,19 @@ const categories: ContractorCategory[] = [
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    color: var(--primary-600);
+    color: var(--primary-900);
     font-weight: 600;
     font-size: var(--font-size-lg);
     text-decoration: none;
     transition: var(--transition);
+    padding: var(--space-3) var(--space-6);
+    border: 2px solid var(--primary-900);
+    border-radius: var(--border-radius);
   }
 
   .view-all-link:hover {
-    color: var(--primary-700);
+    background: var(--primary-900);
+    color: white;
     text-decoration: none;
   }
 

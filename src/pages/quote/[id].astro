@@ -1,0 +1,656 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { contractorDb } from '../../lib/database';
+
+export async function getStaticPaths() {
+  const contractors = contractorDb.getAll();
+  return contractors.map((contractor) => ({
+    params: { id: contractor.id },
+    props: { contractor },
+  }));
+}
+
+const { contractor } = Astro.props;
+
+if (!contractor) {
+  return Astro.redirect('/contractors');
+}
+
+const title = `Request Quote from ${contractor.businessName} | ${contractor.name}`;
+const description = `Get a free quote from ${contractor.businessName} for ${contractor.specialties.join(', ')} services in ${contractor.address.city}, ${contractor.address.state}.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="quote-request-page">
+    <!-- Header Section -->
+    <section class="quote-header">
+      <div class="container">
+        <div class="header-content">
+          <div class="contractor-info">
+            {contractor.images.logo && (
+              <img 
+                src={contractor.images.logo} 
+                alt={`${contractor.businessName} logo`}
+                class="contractor-logo"
+              />
+            )}
+            <div class="contractor-details">
+              <h1>Request Quote from</h1>
+              <h2>{contractor.businessName}</h2>
+              <p class="contractor-name">by {contractor.name}</p>
+              <div class="contractor-badges">
+                {contractor.licensed && <span class="badge licensed">Licensed</span>}
+                {contractor.insured && <span class="badge insured">Insured</span>}
+              </div>
+            </div>
+          </div>
+          
+          <div class="quote-benefits">
+            <h3>Why Request a Quote?</h3>
+            <ul>
+              <li>✓ Free, no-obligation estimate</li>
+              <li>✓ {contractor.yearsInBusiness} years of experience</li>
+              <li>✓ Licensed and insured</li>
+              <li>✓ Competitive pricing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quote Form Section -->
+    <section class="quote-form-section">
+      <div class="container">
+        <div class="form-grid">
+          <!-- Left Column - Form -->
+          <div class="form-container">
+            <h2>Tell Us About Your Project</h2>
+            <p>Fill out the form below and we'll get back to you with a detailed quote within 24 hours.</p>
+            
+            <form class="quote-form" id="quoteForm">
+              <input type="hidden" name="contractorId" value={contractor.id}>
+              <input type="hidden" name="contractorName" value={contractor.businessName}>
+              
+              <!-- Contact Information -->
+              <div class="form-section">
+                <h3>Contact Information</h3>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                  </div>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Project Details -->
+              <div class="form-section">
+                <h3>Project Details</h3>
+                
+                <div class="form-group">
+                  <label for="projectType">Project Type *</label>
+                  <select id="projectType" name="projectType" required>
+                    <option value="">Select a service</option>
+                    {contractor.specialties.map(specialty => (
+                      <option value={specialty}>{specialty}</option>
+                    ))}
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="projectAddress">Project Address</label>
+                  <input type="text" id="projectAddress" name="projectAddress" placeholder="Street address, City, State">
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="timeline">Preferred Timeline</label>
+                    <select id="timeline" name="timeline">
+                      <option value="">Select timeline</option>
+                      <option value="asap">ASAP</option>
+                      <option value="1-2weeks">1-2 weeks</option>
+                      <option value="1month">Within 1 month</option>
+                      <option value="2-3months">2-3 months</option>
+                      <option value="flexible">Flexible</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="budget">Estimated Budget</label>
+                    <select id="budget" name="budget">
+                      <option value="">Select budget range</option>
+                      <option value="under-1000">Under $1,000</option>
+                      <option value="1000-5000">$1,000 - $5,000</option>
+                      <option value="5000-10000">$5,000 - $10,000</option>
+                      <option value="10000-25000">$10,000 - $25,000</option>
+                      <option value="25000-50000">$25,000 - $50,000</option>
+                      <option value="over-50000">Over $50,000</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="description">Project Description *</label>
+                  <textarea 
+                    id="description" 
+                    name="description" 
+                    rows="5" 
+                    placeholder="Please describe your project in detail. Include any specific requirements, materials, or concerns."
+                    required
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Additional Information -->
+              <div class="form-section">
+                <h3>Additional Information</h3>
+                
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" name="emergencyService" value="yes">
+                    This is an emergency service request
+                  </label>
+                </div>
+                
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" name="siteVisit" value="yes">
+                    I would like to schedule a site visit
+                  </label>
+                </div>
+                
+                <div class="form-group">
+                  <label for="additionalNotes">Additional Notes</label>
+                  <textarea 
+                    id="additionalNotes" 
+                    name="additionalNotes" 
+                    rows="3" 
+                    placeholder="Any additional information or questions?"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                  Send Quote Request
+                </button>
+                <p class="form-disclaimer">
+                  By submitting this form, you agree to be contacted by {contractor.businessName} regarding your quote request.
+                </p>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right Column - Contractor Info -->
+          <div class="contractor-sidebar">
+            <div class="contact-card">
+              <h3>Contact {contractor.businessName}</h3>
+              
+              <div class="contact-item">
+                <span class="contact-icon">📞</span>
+                <div>
+                  <strong>Call for Immediate Service</strong>
+                  <a href={`tel:${contractor.phone}`} class="phone-number">{contractor.phone}</a>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">✉️</span>
+                <div>
+                  <strong>Email</strong>
+                  <a href={`mailto:${contractor.email}`}>{contractor.email}</a>
+                </div>
+              </div>
+              
+              <div class="service-areas">
+                <h4>Service Areas</h4>
+                <div class="areas-list">
+                  {contractor.serviceAreas.map(area => (
+                    <span class="area-tag">{area}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div class="specialties-card">
+              <h3>Our Services</h3>
+              <div class="specialties-list">
+                {contractor.specialties.map(specialty => (
+                  <div class="specialty-item">
+                    <span class="specialty-icon">✓</span>
+                    <span>{specialty}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .quote-request-page {
+    min-height: 100vh;
+    background: var(--gray-50);
+  }
+
+  /* Header Section */
+  .quote-header {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    color: white;
+    padding: var(--space-12) 0;
+  }
+
+  .header-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-12);
+    align-items: center;
+  }
+
+  .contractor-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .contractor-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--border-radius-lg);
+    object-fit: cover;
+    border: 3px solid white;
+  }
+
+  .contractor-details h1 {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+    margin-bottom: var(--space-1);
+    font-weight: 400;
+  }
+
+  .contractor-details h2 {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+    line-height: 1.2;
+  }
+
+  .contractor-name {
+    font-size: var(--font-size-base);
+    opacity: 0.8;
+    margin-bottom: var(--space-3);
+  }
+
+  .contractor-badges {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .badge {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 2px solid;
+  }
+
+  .badge.licensed {
+    background: var(--success-500);
+    color: white;
+    border-color: var(--success-500);
+  }
+
+  .badge.insured {
+    background: white;
+    color: var(--primary-900);
+    border-color: white;
+  }
+
+  .quote-benefits {
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(10px);
+  }
+
+  .quote-benefits h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .quote-benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .quote-benefits li {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-2);
+    opacity: 0.95;
+  }
+
+  /* Form Section */
+  .quote-form-section {
+    padding: var(--space-16) 0;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-12);
+  }
+
+  .form-container {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-md);
+  }
+
+  .form-container h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+  }
+
+  .form-container > p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-8);
+    line-height: 1.5;
+  }
+
+  .form-section {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .form-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .form-section h3 {
+    font-size: var(--font-size-lg);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .form-group {
+    margin-bottom: var(--space-4);
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: var(--space-3);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    transition: var(--transition);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  .form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: var(--space-2);
+  }
+
+  .form-actions {
+    text-align: center;
+  }
+
+  .btn-submit {
+    background: var(--primary-600);
+    color: white;
+    border: none;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: var(--space-4);
+  }
+
+  .btn-submit:hover {
+    background: var(--primary-700);
+    transform: translateY(-1px);
+  }
+
+  .form-disclaimer {
+    font-size: var(--font-size-sm);
+    color: var(--gray-500);
+    line-height: 1.4;
+  }
+
+  /* Sidebar */
+  .contractor-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .contact-card,
+  .specialties-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .contact-card h3,
+  .specialties-card h3 {
+    font-size: var(--font-size-lg);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: var(--space-2);
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .contact-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact-icon {
+    font-size: var(--font-size-lg);
+    margin-top: var(--space-1);
+  }
+
+  .contact-item strong {
+    display: block;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+  }
+
+  .contact-item a {
+    color: var(--primary-600);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .contact-item a:hover {
+    text-decoration: underline;
+  }
+
+  .phone-number {
+    font-size: var(--font-size-lg);
+  }
+
+  .service-areas {
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .service-areas h4 {
+    font-size: var(--font-size-base);
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+  }
+
+  .areas-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .area-tag {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+  }
+
+  .specialties-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .specialty-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: var(--gray-50);
+    border-radius: var(--border-radius);
+  }
+
+  .specialty-icon {
+    color: var(--success-500);
+    font-weight: bold;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .header-content {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+      text-align: center;
+    }
+
+    .contractor-info {
+      justify-content: center;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .contractor-info {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .contractor-logo {
+      width: 80px;
+      height: 80px;
+    }
+
+    .contractor-details h2 {
+      font-size: var(--font-size-2xl);
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .form-container,
+    .contact-card,
+    .specialties-card {
+      padding: var(--space-6);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('quoteForm');
+    
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        // Simple validation
+        const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'description'];
+        const missingFields = requiredFields.filter(field => !data[field]);
+        
+        if (missingFields.length > 0) {
+          alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+          return;
+        }
+        
+        // For now, show success message and redirect to contractor profile
+        alert('Thank you for your quote request! The contractor will contact you within 24 hours.');
+        
+        // In a real application, you would send this data to a server
+        console.log('Quote request data:', data);
+        
+        // Redirect to contractor profile
+        window.location.href = `/contractors/${data.contractorId}`;
+      });
+    }
+  });
+</script>

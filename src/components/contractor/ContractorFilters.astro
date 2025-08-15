@@ -99,7 +99,7 @@ const serviceAreas = [
 <style>
   .filters-container {
     background: white;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     padding: var(--space-6);
     border: 1px solid var(--gray-200);
@@ -120,12 +120,12 @@ const serviceAreas = [
   .filters-header h3 {
     font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--primary-900);
     margin: 0;
   }
   
   .clear-filters {
-    background: none;
+    background: white;
     border: 1px solid var(--gray-300);
     color: var(--gray-600);
     padding: var(--space-2) var(--space-3);
@@ -136,8 +136,9 @@ const serviceAreas = [
   }
   
   .clear-filters:hover {
-    background: var(--gray-50);
-    color: var(--gray-700);
+    background: var(--gray-100);
+    color: var(--primary-900);
+    border-color: var(--gray-400);
   }
   
   .filter-section {
@@ -147,7 +148,7 @@ const serviceAreas = [
   .filter-label {
     display: block;
     font-weight: 600;
-    color: var(--gray-700);
+    color: var(--primary-900);
     margin-bottom: var(--space-2);
     font-size: var(--font-size-sm);
   }
@@ -175,9 +176,9 @@ const serviceAreas = [
   }
 
   .search-button {
-    background: var(--primary-600);
+    background: var(--primary-900);
     color: white;
-    border: none;
+    border: 2px solid var(--primary-900);
     border-radius: var(--border-radius);
     padding: var(--space-3);
     cursor: pointer;
@@ -190,13 +191,14 @@ const serviceAreas = [
   }
 
   .search-button:hover {
-    background: var(--primary-700);
+    background: white;
+    color: var(--primary-900);
   }
   
   .search-input:focus, .filter-select:focus {
     outline: none;
-    border-color: var(--primary-500);
-    box-shadow: 0 0 0 3px var(--primary-100);
+    border-color: var(--primary-900);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
   }
   
   .rating-filters, .credential-filters {
@@ -230,17 +232,17 @@ const serviceAreas = [
     width: 16px;
     background-color: white;
     border: 2px solid var(--gray-300);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius);
     transition: var(--transition);
   }
   
   .checkbox-label:hover input ~ .checkmark {
-    border-color: var(--primary-500);
+    border-color: var(--primary-900);
   }
   
   .checkbox-label input:checked ~ .checkmark {
-    background-color: var(--primary-600);
-    border-color: var(--primary-600);
+    background-color: var(--primary-900);
+    border-color: var(--primary-900);
   }
   
   .checkbox-label input:checked ~ .checkmark:after {
@@ -332,7 +334,7 @@ const serviceAreas = [
     filterContractors();
   }
   
-  function handleSearchKeypress(event) {
+  function handleSearchKeypress(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       filterContractors();
