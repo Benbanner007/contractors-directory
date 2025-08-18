@@ -293,6 +293,7 @@ const structuredData = {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: var(--space-6);
     margin-bottom: var(--space-8);
+    align-items: start;
   }
   
   .no-results {
@@ -443,212 +444,6 @@ const structuredData = {
     .contractors-grid {
       gap: var(--space-4);
     }
-  }
-
-  /* Styles for dynamically generated contractor cards */
-  .contractor-card {
-    background: white;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-6);
-    transition: var(--transition);
-    border: 1px solid var(--gray-200);
-    height: fit-content;
-  }
-  
-  .contractor-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-  
-  .contractor-card .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-4);
-  }
-  
-  .contractor-card .contractor-badges {
-    display: flex;
-    gap: var(--space-2);
-    flex-direction: column;
-    align-items: flex-end;
-  }
-  
-  .contractor-card .badge {
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-  
-  .contractor-card .badge.licensed {
-    background: var(--green-100);
-    color: var(--green-800);
-  }
-  
-  .contractor-card .badge.insured {
-    background: var(--blue-100);
-    color: var(--blue-800);
-  }
-  
-  .contractor-card .card-content {
-    margin-bottom: var(--space-6);
-  }
-  
-  .contractor-card .business-name {
-    font-size: var(--font-size-xl);
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: var(--space-1);
-    line-height: 1.3;
-  }
-  
-  .contractor-card .contractor-name {
-    font-size: var(--font-size-sm);
-    color: var(--gray-600);
-    margin-bottom: var(--space-3);
-  }
-  
-  .contractor-card .rating-section {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-bottom: var(--space-3);
-  }
-  
-  .contractor-card .stars {
-    font-size: var(--font-size-lg);
-    line-height: 1;
-  }
-  
-  .contractor-card .stars-filled {
-    color: var(--yellow-500);
-  }
-  
-  .contractor-card .stars-half {
-    color: var(--yellow-300);
-  }
-  
-  .contractor-card .stars-empty {
-    color: var(--gray-300);
-  }
-  
-  .contractor-card .rating-text {
-    font-size: var(--font-size-sm);
-    color: var(--gray-600);
-  }
-  
-  .contractor-card .specialties {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-bottom: var(--space-3);
-  }
-  
-  .contractor-card .specialty-tag {
-    background: var(--primary-50);
-    color: var(--primary-700);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 500;
-  }
-  
-  .contractor-card .description {
-    color: var(--gray-600);
-    line-height: 1.5;
-    margin-bottom: var(--space-3);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  .contractor-card .location, 
-  .contractor-card .service-areas, 
-  .contractor-card .experience {
-    font-size: var(--font-size-sm);
-    color: var(--gray-600);
-    margin-bottom: var(--space-2);
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-  }
-  
-  .contractor-card .service-areas {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-1);
-  }
-  
-  .contractor-card .card-footer {
-    border-top: 1px solid var(--gray-200);
-    padding-top: var(--space-4);
-  }
-  
-  .contractor-card .contact-info {
-    display: flex;
-    gap: var(--space-4);
-    margin-bottom: var(--space-4);
-    flex-wrap: wrap;
-  }
-  
-  .contractor-card .phone-link, 
-  .contractor-card .website-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    color: var(--primary-600);
-    text-decoration: none;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-  }
-  
-  .contractor-card .phone-link:hover, 
-  .contractor-card .website-link:hover {
-    color: var(--primary-700);
-    text-decoration: underline;
-  }
-  
-  .contractor-card .action-buttons {
-    display: flex;
-    gap: var(--space-3);
-  }
-  
-  .contractor-card .btn-quote, 
-  .contractor-card .btn-view {
-    flex: 1;
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    transition: var(--transition);
-    border: none;
-    cursor: pointer;
-    font-size: var(--font-size-sm);
-  }
-  
-  .contractor-card .btn-quote {
-    background: var(--primary-600);
-    color: white;
-  }
-  
-  .contractor-card .btn-quote:hover {
-    background: var(--primary-700);
-  }
-  
-  .contractor-card .btn-view {
-    background: var(--gray-100);
-    color: var(--gray-700);
-    border: 1px solid var(--gray-300);
-  }
-  
-  .contractor-card .btn-view:hover {
-    background: var(--gray-200);
-    text-decoration: none;
   }
 
   /* Footer */
@@ -815,6 +610,10 @@ const structuredData = {
         return `
           <div class="contractor-card">
             <div class="card-header">
+              ${contractor.images && contractor.images.logo ? 
+                `<img src="${contractor.images.logo}" alt="${contractor.businessName} logo" class="contractor-logo" />` : 
+                ''
+              }
               <div class="contractor-badges">
                 ${contractor.licensed ? '<span class="badge licensed">Licensed</span>' : ''}
                 ${contractor.insured ? '<span class="badge insured">Insured</span>' : ''}
@@ -856,7 +655,7 @@ const structuredData = {
               </div>
               <div class="action-buttons">
                 <button class="btn-quote">Get Quote</button>
-                <a href="/contractors/${contractor.category}/${contractor.id}" class="btn-view">View Profile</a>
+                <a href="/contractors/${contractor.id}" class="btn-view">View Profile</a>
               </div>
             </div>
           </div>

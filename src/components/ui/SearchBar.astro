@@ -52,25 +52,27 @@ const {
 <style>
   .search-container {
     width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
   }
 
   .search-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
     background: white;
     border-radius: var(--border-radius);
-    padding: var(--space-4);
+    padding: var(--space-6);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--gray-200);
+    width: 100%;
+    max-width: 600px;
   }
 
   .search-inputs {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
 
   .search-field {
@@ -79,11 +81,13 @@ const {
 
   .search-input {
     width: 100%;
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-6) var(--space-8);
     border: 1px solid var(--gray-300);
     border-radius: var(--border-radius);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-xl);
     transition: var(--transition);
+    text-align: center;
+    min-height: 60px;
   }
 
   .search-input:focus {
@@ -96,16 +100,17 @@ const {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
     background: var(--primary-900);
     color: white;
     border: 2px solid var(--primary-900);
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-6) var(--space-10);
     border-radius: var(--border-radius);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-xl);
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
+    min-height: 60px;
   }
 
   .search-button:hover {
@@ -126,10 +131,29 @@ const {
     .search-form {
       flex-direction: row;
       align-items: end;
+      max-width: 700px;
     }
     
     .search-button {
       white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .search-form {
+      padding: var(--space-4);
+    }
+    
+    .search-input {
+      padding: var(--space-5) var(--space-6);
+      font-size: var(--font-size-lg);
+      min-height: 56px;
+    }
+    
+    .search-button {
+      padding: var(--space-5) var(--space-8);
+      font-size: var(--font-size-lg);
+      min-height: 56px;
     }
   }
 </style>
