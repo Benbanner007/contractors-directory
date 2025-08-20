@@ -237,10 +237,11 @@ const info = categoryInfo[categoryData.id] || {
 
   /* Hero Section */
   .category-hero {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    color: var(--gray-900);
     padding: var(--space-16) 0 var(--space-12);
     text-align: center;
+    border-bottom: 1px solid var(--gray-200);
   }
 
   .category-icon {
@@ -253,6 +254,7 @@ const info = categoryInfo[categoryData.id] || {
     font-weight: 700;
     margin-bottom: var(--space-4);
     line-height: 1.2;
+    color: var(--gray-900);
   }
 
   .hero-description {
@@ -261,7 +263,7 @@ const info = categoryInfo[categoryData.id] || {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    opacity: 0.95;
+    color: var(--gray-700);
   }
 
   .hero-stats {

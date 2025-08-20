@@ -162,11 +162,12 @@ const structuredData = {
   
   /* Page Header */
   .page-header {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    color: var(--gray-900);
     padding: var(--space-16) 0 var(--space-12);
     position: relative;
     overflow: hidden;
+    border-bottom: 1px solid var(--gray-200);
   }
   
   .page-header::before {
@@ -191,6 +192,7 @@ const structuredData = {
     font-weight: 700;
     margin-bottom: var(--space-4);
     line-height: 1.2;
+    color: var(--gray-900);
   }
   
   .header-description {
@@ -199,7 +201,7 @@ const structuredData = {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    opacity: 0.95;
+    color: var(--gray-700);
   }
   
   .header-stats {
@@ -604,77 +606,19 @@ const structuredData = {
       noResults.style.display = 'none';
       resultsCount.textContent = `Showing ${filteredContractors.length} contractor${filteredContractors.length !== 1 ? 's' : ''}`;
       
-      // Update grid HTML (simplified version - in a real app you'd use a more sophisticated approach)
-      grid.innerHTML = filteredContractors.map(contractor => {
-        const stars = getStarRating(contractor.rating);
-        return `
-          <div class="contractor-card">
-            <div class="card-header">
-              ${contractor.images && contractor.images.logo ? 
-                `<img src="${contractor.images.logo}" alt="${contractor.businessName} logo" class="contractor-logo" />` : 
-                ''
-              }
-              <div class="contractor-badges">
-                ${contractor.licensed ? '<span class="badge licensed">Licensed</span>' : ''}
-                ${contractor.insured ? '<span class="badge insured">Insured</span>' : ''}
-              </div>
-            </div>
-            <div class="card-content">
-              <h3 class="business-name">${contractor.businessName}</h3>
-              <p class="contractor-name">by ${contractor.name}</p>
-              <div class="rating-section">
-                <div class="stars">
-                  <span class="stars-filled">${stars.full}</span>
-                  <span class="stars-half">${stars.half}</span>
-                  <span class="stars-empty">${stars.empty}</span>
-                </div>
-                <span class="rating-text">${contractor.rating} (${contractor.reviewCount} reviews)</span>
-              </div>
-              <div class="specialties">
-                ${contractor.specialties.slice(0, 3).map(specialty => 
-                  `<span class="specialty-tag">${specialty}</span>`
-                ).join('')}
-              </div>
-              <p class="description">${contractor.description}</p>
-              <div class="location">
-                <span class="location-icon">📍</span>
-                <span>${contractor.address.city}, ${contractor.address.state}</span>
-              </div>
-              <div class="service-areas">
-                <strong>Service Areas:</strong> ${contractor.serviceAreas.join(', ')}
-              </div>
-              <div class="experience">
-                <span class="experience-icon">🏆</span>
-                <span>${contractor.yearsInBusiness} years in business</span>
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="contact-info">
-                <a href="tel:${contractor.phone}" class="phone-link">📞 ${contractor.phone}</a>
-                ${contractor.website ? `<a href="${contractor.website}" target="_blank" rel="noopener" class="website-link">🌐 Website</a>` : ''}
-              </div>
-              <div class="action-buttons">
-                <button class="btn-quote">Get Quote</button>
-                <a href="/contractors/${contractor.id}" class="btn-view">View Profile</a>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      // Hide/show contractor cards based on filtering
+      const allCards = grid.querySelectorAll('.contractor-card');
+      allCards.forEach((card, index) => {
+        if (index < filteredContractors.length) {
+          card.style.display = 'flex';
+          // Update card data if needed for sorting
+        } else {
+          card.style.display = 'none';
+        }
+      });
     }
   }
 
-  function getStarRating(rating) {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    
-    return {
-      full: '★'.repeat(fullStars),
-      half: hasHalfStar ? '☆' : '',
-      empty: '☆'.repeat(emptyStars)
-    };
-  }
 
   // Initialize display on page load
   document.addEventListener('DOMContentLoaded', function() {
