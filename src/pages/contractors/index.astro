@@ -529,10 +529,16 @@ const structuredData = {
   function applyFilters(filters) {
     console.log('Applying filters:', filters);
     filteredContractors = allContractors.filter(contractor => {
-      // Search term filter
+      // Search term filter - improved matching
       if (filters.searchTerm) {
-        const searchable = `${contractor.name} ${contractor.businessName} ${contractor.specialties.join(' ')} ${contractor.description}`.toLowerCase();
-        if (!searchable.includes(filters.searchTerm)) return false;
+        const searchTerm = filters.searchTerm.toLowerCase();
+        const searchable = `${contractor.name} ${contractor.businessName} ${contractor.specialties.join(' ')} ${contractor.description} ${contractor.address.city} ${contractor.address.state}`.toLowerCase();
+        
+        // Check if any word in the search term matches
+        const searchWords = searchTerm.split(' ').filter(word => word.length > 0);
+        const hasMatch = searchWords.some(word => searchable.includes(word));
+        
+        if (!hasMatch) return false;
       }
       
       // Category filter
@@ -620,9 +626,44 @@ const structuredData = {
   }
 
 
+  // Handle URL search parameters on page load
+  function handleURLParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTerm = urlParams.get('search');
+    const location = urlParams.get('location');
+    
+    if (searchTerm || location) {
+      console.log('Found URL params - search:', searchTerm, 'location:', location);
+      
+      const filters = {
+        searchTerm: searchTerm ? searchTerm.toLowerCase() : null,
+        selectedLocation: location || null,
+        selectedCategory: null,
+        minRating: null,
+        selectedExperience: null,
+        licensedRequired: false,
+        insuredRequired: false
+      };
+      
+      applyFilters(filters);
+      
+      // Update any visible filter inputs if they exist
+      if (searchTerm) {
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) searchInput.value = searchTerm;
+      }
+      
+      if (location) {
+        const locationSelect = document.querySelector('select[name="location"]');
+        if (locationSelect) locationSelect.value = location;
+      }
+    }
+  }
+
   // Initialize display on page load
   document.addEventListener('DOMContentLoaded', function() {
     console.log('Page loaded, initializing display...');
+    handleURLParams();
     updateDisplay();
   });
 

@@ -49,6 +49,42 @@ const {
   </form>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.search-form');
+    
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const serviceInput = form.querySelector('input[name="service"]');
+        const locationInput = form.querySelector('input[name="location"]');
+        
+        const service = serviceInput?.value.trim() || '';
+        const location = locationInput?.value.trim() || '';
+        
+        // Build the search URL with parameters
+        const searchParams = new URLSearchParams();
+        
+        if (service) {
+          searchParams.set('search', service);
+        }
+        
+        if (location) {
+          searchParams.set('location', location);
+        }
+        
+        // Redirect to contractors page with search parameters
+        const baseUrl = '/contractors';
+        const queryString = searchParams.toString();
+        const finalUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+        
+        window.location.href = finalUrl;
+      });
+    }
+  });
+</script>
+
 <style>
   .search-container {
     width: 100%;
@@ -92,8 +128,8 @@ const {
 
   .search-input:focus {
     outline: none;
-    border-color: var(--primary-900);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-600);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   }
 
   .search-button {
@@ -101,9 +137,9 @@ const {
     align-items: center;
     justify-content: center;
     gap: var(--space-3);
-    background: var(--primary-900);
+    background: var(--accent-500);
     color: white;
-    border: 2px solid var(--primary-900);
+    border: 2px solid var(--accent-500);
     padding: var(--space-6) var(--space-10);
     border-radius: var(--border-radius);
     font-size: var(--font-size-xl);
@@ -114,13 +150,13 @@ const {
   }
 
   .search-button:hover {
-    background: white;
-    color: var(--primary-900);
+    background: var(--accent-600);
+    border-color: var(--accent-600);
   }
 
   .search-button:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
   }
 
   @media (min-width: 768px) {

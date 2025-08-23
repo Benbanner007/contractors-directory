@@ -139,7 +139,7 @@ const allCategories = [...new Set(blogPosts.map(post => post.category))];
 
   /* Hero Section */
   .blog-hero {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
     color: white;
     padding: var(--space-16) 0 var(--space-12);
     text-align: center;
@@ -150,13 +150,16 @@ const allCategories = [...new Set(blogPosts.map(post => post.category))];
     font-weight: 700;
     margin-bottom: var(--space-4);
     line-height: 1.2;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .hero-content p {
     font-size: var(--font-size-lg);
-    opacity: 0.95;
+    color: rgba(255, 255, 255, 0.95);
     max-width: 600px;
     margin: 0 auto;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   /* Featured Section */
@@ -245,7 +248,7 @@ const allCategories = [...new Set(blogPosts.map(post => post.category))];
     position: absolute;
     top: var(--space-3);
     left: var(--space-3);
-    background: var(--primary-600);
+    background: var(--accent-500);
     color: white;
     padding: var(--space-1) var(--space-3);
     border-radius: var(--border-radius);
@@ -272,7 +275,7 @@ const allCategories = [...new Set(blogPosts.map(post => post.category))];
   }
 
   .post-content h3 a:hover {
-    color: var(--primary-600);
+    color: var(--primary-700);
   }
 
   .post-excerpt {
@@ -373,7 +376,7 @@ const allCategories = [...new Set(blogPosts.map(post => post.category))];
 
   .sidebar-cta {
     display: inline-flex;
-    background: var(--primary-600);
+    background: var(--accent-500);
     color: white;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--border-radius);
@@ -383,7 +386,7 @@ const allCategories = [...new Set(blogPosts.map(post => post.category))];
   }
 
   .sidebar-cta:hover {
-    background: var(--primary-700);
+    background: var(--accent-600);
     text-decoration: none;
   }
 

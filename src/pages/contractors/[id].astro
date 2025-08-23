@@ -263,7 +263,7 @@ const businessHours = formatBusinessHours(contractor.businessHours);
 
   /* Hero Section */
   .profile-hero {
-    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+    background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
     color: white;
     padding: var(--space-16) 0;
   }
@@ -288,12 +288,15 @@ const businessHours = formatBusinessHours(contractor.businessHours);
     font-weight: 700;
     margin-bottom: var(--space-2);
     line-height: 1.2;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .contractor-name {
     font-size: var(--font-size-lg);
-    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.95);
     margin-bottom: var(--space-4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .contractor-badges {
@@ -318,7 +321,7 @@ const businessHours = formatBusinessHours(contractor.businessHours);
 
   .badge.insured {
     background: white;
-    color: var(--primary-900);
+    color: var(--primary-800);
     border-color: white;
   }
 
@@ -349,7 +352,8 @@ const businessHours = formatBusinessHours(contractor.businessHours);
 
   .rating-text {
     font-size: var(--font-size-lg);
-    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .quick-actions {
@@ -371,36 +375,37 @@ const businessHours = formatBusinessHours(contractor.businessHours);
   }
 
   .btn-primary {
-    background: white;
-    color: var(--primary-900);
-    border-color: white;
+    background: var(--accent-500);
+    color: white;
+    border-color: var(--accent-500);
   }
 
   .btn-primary:hover {
-    background: var(--primary-100);
+    background: var(--accent-600);
+    border-color: var(--accent-600);
     text-decoration: none;
   }
 
   .btn-secondary {
-    background: var(--primary-900);
+    background: var(--primary-600);
     color: white;
-    border-color: var(--primary-900);
+    border-color: var(--primary-600);
   }
 
   .btn-secondary:hover {
-    background: var(--primary-800);
-    border-color: var(--primary-800);
+    background: var(--primary-700);
+    border-color: var(--primary-700);
   }
 
   .btn-outline {
     background: transparent;
-    color: white;
-    border-color: white;
+    color: var(--primary-600);
+    border-color: var(--primary-600);
   }
 
   .btn-outline:hover {
-    background: white;
-    color: var(--primary-900);
+    background: var(--primary-600);
+    color: white;
     text-decoration: none;
   }
 
@@ -446,7 +451,7 @@ const businessHours = formatBusinessHours(contractor.businessHours);
     padding: var(--space-4);
     background: var(--primary-50);
     border-radius: var(--border-radius);
-    color: var(--primary-900);
+    color: var(--primary-700);
     font-weight: 600;
   }
 
@@ -480,7 +485,7 @@ const businessHours = formatBusinessHours(contractor.businessHours);
   .service-area-item {
     padding: var(--space-3);
     background: var(--primary-50);
-    color: var(--primary-900);
+    color: var(--primary-700);
     border-radius: var(--border-radius);
     text-align: center;
     font-weight: 600;

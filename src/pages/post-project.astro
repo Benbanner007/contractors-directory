@@ -1,0 +1,950 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = "Post Your Project - Get Quotes from Triangle Contractors";
+const description = "Tell us about your home improvement project and get matched with qualified, licensed contractors in the Triangle area. Free quotes, no obligations.";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Post Your Project",
+  "description": description,
+  "url": "https://trianglecontractorshub.com/post-project",
+  "potentialAction": {
+    "@type": "Action",
+    "name": "Submit Project",
+    "target": "https://trianglecontractorshub.com/post-project"
+  }
+};
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <div class="post-project-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Post Your Home Improvement Project</h1>
+          <p class="hero-description">
+            Tell us what you need done, and we'll connect you with up to 3 qualified, 
+            licensed contractors in your area. Get free quotes and compare options.
+          </p>
+          <div class="hero-benefits">
+            <div class="benefit">
+              <span class="benefit-icon">📝</span>
+              <span>Free & Easy</span>
+            </div>
+            <div class="benefit">
+              <span class="benefit-icon">⚡</span>
+              <span>Quick Response</span>
+            </div>
+            <div class="benefit">
+              <span class="benefit-icon">✅</span>
+              <span>Verified Contractors</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section">
+      <div class="container">
+        <div class="form-wrapper">
+          <div class="form-container">
+            <form id="projectForm" class="project-form">
+              <!-- Step 1: Project Type -->
+              <div class="form-step active" data-step="1">
+                <div class="step-header">
+                  <h2>What type of project do you need help with?</h2>
+                  <p>Select the category that best describes your project</p>
+                </div>
+                
+                <div class="project-categories">
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="plumbing" required>
+                    <div class="category-card">
+                      <span class="category-icon">🔧</span>
+                      <span class="category-name">Plumbing</span>
+                      <span class="category-desc">Pipes, fixtures, water heaters</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="electrical" required>
+                    <div class="category-card">
+                      <span class="category-icon">⚡</span>
+                      <span class="category-name">Electrical</span>
+                      <span class="category-desc">Wiring, outlets, lighting</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="hvac" required>
+                    <div class="category-card">
+                      <span class="category-icon">❄️</span>
+                      <span class="category-name">HVAC</span>
+                      <span class="category-desc">Heating, cooling, ventilation</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="roofing" required>
+                    <div class="category-card">
+                      <span class="category-icon">🏠</span>
+                      <span class="category-name">Roofing</span>
+                      <span class="category-desc">Repairs, replacement, gutters</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="flooring" required>
+                    <div class="category-card">
+                      <span class="category-icon">🏗️</span>
+                      <span class="category-name">Flooring</span>
+                      <span class="category-desc">Installation, refinishing</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="kitchen-bath" required>
+                    <div class="category-card">
+                      <span class="category-icon">🚿</span>
+                      <span class="category-name">Kitchen & Bath</span>
+                      <span class="category-desc">Remodeling, fixtures</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="painting" required>
+                    <div class="category-card">
+                      <span class="category-icon">🎨</span>
+                      <span class="category-name">Painting</span>
+                      <span class="category-desc">Interior, exterior</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="general-contractor" required>
+                    <div class="category-card">
+                      <span class="category-icon">🔨</span>
+                      <span class="category-name">General Contracting</span>
+                      <span class="category-desc">Renovations, additions</span>
+                    </div>
+                  </label>
+                  
+                  <label class="category-option">
+                    <input type="radio" name="projectType" value="other" required>
+                    <div class="category-card">
+                      <span class="category-icon">📋</span>
+                      <span class="category-name">Other</span>
+                      <span class="category-desc">Tell us what you need</span>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="step-actions">
+                  <button type="button" class="btn-next" onclick="nextStep()">Continue</button>
+                </div>
+              </div>
+
+              <!-- Step 2: Project Details -->
+              <div class="form-step" data-step="2">
+                <div class="step-header">
+                  <h2>Tell us about your project</h2>
+                  <p>The more details you provide, the better we can match you with the right contractor</p>
+                </div>
+                
+                <div class="form-fields">
+                  <div class="form-group">
+                    <label for="projectTitle">Project Title *</label>
+                    <input type="text" id="projectTitle" name="projectTitle" required
+                           placeholder="e.g., Kitchen faucet replacement, Bathroom remodel">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="projectDescription">Detailed Description *</label>
+                    <textarea id="projectDescription" name="projectDescription" rows="6" required
+                              placeholder="Describe your project in detail. What needs to be done? What's the current situation? Any specific requirements or preferences?"></textarea>
+                  </div>
+                  
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="timeline">When do you need this done?</label>
+                      <select id="timeline" name="timeline">
+                        <option value="">Select timeline</option>
+                        <option value="emergency">Emergency (within 24 hours)</option>
+                        <option value="asap">ASAP (within a week)</option>
+                        <option value="flexible">I'm flexible</option>
+                        <option value="1-2weeks">1-2 weeks</option>
+                        <option value="1month">Within 1 month</option>
+                        <option value="2-3months">2-3 months</option>
+                        <option value="planning">Just planning ahead</option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="budget">Estimated Budget</label>
+                      <select id="budget" name="budget">
+                        <option value="">Select budget range</option>
+                        <option value="under-500">Under $500</option>
+                        <option value="500-1000">$500 - $1,000</option>
+                        <option value="1000-2500">$1,000 - $2,500</option>
+                        <option value="2500-5000">$2,500 - $5,000</option>
+                        <option value="5000-10000">$5,000 - $10,000</option>
+                        <option value="10000-25000">$10,000 - $25,000</option>
+                        <option value="25000-50000">$25,000 - $50,000</option>
+                        <option value="over-50000">Over $50,000</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="propertyType">Property Type</label>
+                    <select id="propertyType" name="propertyType">
+                      <option value="">Select property type</option>
+                      <option value="single-family">Single Family Home</option>
+                      <option value="condo">Condo/Townhouse</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="commercial">Commercial Property</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="step-actions">
+                  <button type="button" class="btn-back" onclick="prevStep()">Back</button>
+                  <button type="button" class="btn-next" onclick="nextStep()">Continue</button>
+                </div>
+              </div>
+
+              <!-- Step 3: Location & Contact -->
+              <div class="form-step" data-step="3">
+                <div class="step-header">
+                  <h2>Where is your project located?</h2>
+                  <p>We'll find contractors in your area</p>
+                </div>
+                
+                <div class="form-fields">
+                  <div class="form-group">
+                    <label for="address">Project Address *</label>
+                    <input type="text" id="address" name="address" required
+                           placeholder="123 Main St, City, State ZIP">
+                  </div>
+                  
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="city">City *</label>
+                      <select id="city" name="city" required>
+                        <option value="">Select city</option>
+                        <option value="Raleigh">Raleigh</option>
+                        <option value="Durham">Durham</option>
+                        <option value="Chapel Hill">Chapel Hill</option>
+                        <option value="Cary">Cary</option>
+                        <option value="Apex">Apex</option>
+                        <option value="Morrisville">Morrisville</option>
+                        <option value="Wake Forest">Wake Forest</option>
+                        <option value="Garner">Garner</option>
+                        <option value="Holly Springs">Holly Springs</option>
+                        <option value="Fuquay-Varina">Fuquay-Varina</option>
+                        <option value="Other">Other Triangle Area</option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="zipCode">ZIP Code *</label>
+                      <input type="text" id="zipCode" name="zipCode" required 
+                             pattern="[0-9]{5}" placeholder="27605">
+                    </div>
+                  </div>
+                  
+                  <div class="contact-section">
+                    <h3>Your Contact Information</h3>
+                    <p>Contractors will use this to send you quotes</p>
+                    
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                      </div>
+                    </div>
+                    
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="preferences-section">
+                    <h3>Communication Preferences</h3>
+                    <div class="checkbox-group">
+                      <label class="checkbox-item">
+                        <input type="checkbox" name="contactMethod" value="email" checked>
+                        <span>Email me quotes and updates</span>
+                      </label>
+                      <label class="checkbox-item">
+                        <input type="checkbox" name="contactMethod" value="phone">
+                        <span>Call me to discuss my project</span>
+                      </label>
+                      <label class="checkbox-item">
+                        <input type="checkbox" name="contactMethod" value="text">
+                        <span>Text me important updates</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="step-actions">
+                  <button type="button" class="btn-back" onclick="prevStep()">Back</button>
+                  <button type="submit" class="btn-submit">Submit Project</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Sidebar Info -->
+          <div class="info-sidebar">
+            <div class="info-card">
+              <h3>How it works</h3>
+              <div class="steps-list">
+                <div class="step-item">
+                  <span class="step-number">1</span>
+                  <div class="step-content">
+                    <strong>Tell us about your project</strong>
+                    <p>Provide details about what you need done</p>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <span class="step-number">2</span>
+                  <div class="step-content">
+                    <strong>Get matched with contractors</strong>
+                    <p>We'll find qualified professionals in your area</p>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <span class="step-number">3</span>
+                  <div class="step-content">
+                    <strong>Receive free quotes</strong>
+                    <p>Compare proposals and choose the best fit</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="info-card">
+              <h3>Why choose us?</h3>
+              <ul class="benefits-list">
+                <li>✓ All contractors are licensed and insured</li>
+                <li>✓ Background checked professionals</li>
+                <li>✓ Free quotes, no obligations</li>
+                <li>✓ Local Triangle area experts</li>
+                <li>✓ Fast response times</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .post-project-page {
+    min-height: 100vh;
+    background: var(--gray-50);
+  }
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+    color: white;
+    padding: var(--space-16) 0 var(--space-12);
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    line-height: 1.2;
+  }
+
+  .hero-description {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-8);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  .hero-benefits {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .benefit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .benefit-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-2);
+  }
+
+  /* Form Section */
+  .form-section {
+    padding: var(--space-16) 0;
+  }
+
+  .form-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-12);
+    align-items: start;
+  }
+
+  .form-container {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-md);
+  }
+
+  .form-step {
+    display: none;
+  }
+
+  .form-step.active {
+    display: block;
+  }
+
+  .step-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .step-header h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+  }
+
+  .step-header p {
+    color: var(--gray-600);
+    font-size: var(--font-size-lg);
+  }
+
+  /* Project Categories */
+  .project-categories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .category-option {
+    cursor: pointer;
+  }
+
+  .category-option input[type="radio"] {
+    display: none;
+  }
+
+  .category-card {
+    padding: var(--space-6);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    text-align: center;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-height: 120px;
+    justify-content: center;
+  }
+
+  .category-card:hover {
+    border-color: var(--primary-400);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .category-option input[type="radio"]:checked + .category-card {
+    border-color: var(--accent-500);
+    background: var(--accent-50);
+  }
+
+  .category-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .category-name {
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  .category-desc {
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+  }
+
+  /* Form Fields */
+  .form-fields {
+    margin-bottom: var(--space-8);
+  }
+
+  .form-group {
+    margin-bottom: var(--space-6);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: var(--space-4);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    transition: var(--transition);
+    font-family: inherit;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .contact-section,
+  .preferences-section {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .contact-section h3,
+  .preferences-section h3 {
+    font-size: var(--font-size-lg);
+    color: var(--gray-900);
+    margin-bottom: var(--space-2);
+  }
+
+  .contact-section p,
+  .preferences-section p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-4);
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+  }
+
+  .checkbox-item input[type="checkbox"] {
+    width: auto;
+  }
+
+  /* Step Actions */
+  .step-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .btn-back,
+  .btn-next,
+  .btn-submit {
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid;
+    font-size: var(--font-size-base);
+  }
+
+  .btn-back {
+    background: white;
+    color: var(--gray-600);
+    border-color: var(--gray-300);
+  }
+
+  .btn-back:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-400);
+  }
+
+  .btn-next,
+  .btn-submit {
+    background: var(--accent-500);
+    color: white;
+    border-color: var(--accent-500);
+  }
+
+  .btn-next:hover,
+  .btn-submit:hover {
+    background: var(--accent-600);
+    border-color: var(--accent-600);
+  }
+
+  /* Info Sidebar */
+  .info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .info-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .info-card h3 {
+    font-size: var(--font-size-lg);
+    color: var(--gray-900);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .step-item {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+
+  .step-number {
+    background: var(--accent-500);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .step-content strong {
+    display: block;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+  }
+
+  .step-content p {
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+
+  .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .benefits-list li {
+    padding: var(--space-2) 0;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .benefits-list li:last-child {
+    border-bottom: none;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .form-wrapper {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    .project-categories {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      padding: var(--space-12) 0 var(--space-8);
+    }
+
+    .hero-content h1 {
+      font-size: var(--font-size-3xl);
+    }
+
+    .hero-benefits {
+      gap: var(--space-6);
+    }
+
+    .form-container {
+      padding: var(--space-6);
+    }
+
+    .project-categories {
+      grid-template-columns: 1fr;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .step-actions {
+      flex-direction: column;
+    }
+
+    .step-actions .btn-back {
+      order: 2;
+    }
+
+    .step-actions .btn-next,
+    .step-actions .btn-submit {
+      order: 1;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .form-section {
+      padding: var(--space-8) 0;
+    }
+
+    .step-header h2 {
+      font-size: var(--font-size-xl);
+    }
+
+    .category-card {
+      padding: var(--space-4);
+      min-height: 100px;
+    }
+  }
+</style>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 3;
+
+  function nextStep() {
+    if (currentStep < totalSteps) {
+      // Validate current step
+      if (!validateStep(currentStep)) {
+        return;
+      }
+      
+      // Hide current step
+      document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+      
+      // Show next step
+      currentStep++;
+      document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+      
+      // Scroll to top of form
+      document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 1) {
+      // Hide current step
+      document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+      
+      // Show previous step
+      currentStep--;
+      document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+      
+      // Scroll to top of form
+      document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function validateStep(step) {
+    const currentStepElement = document.querySelector(`[data-step="${step}"]`);
+    const requiredInputs = currentStepElement.querySelectorAll('[required]');
+    
+    for (let input of requiredInputs) {
+      if (!input.value.trim()) {
+        input.focus();
+        showError(`Please fill out this field: ${input.previousElementSibling?.textContent || input.name}`);
+        return false;
+      }
+      
+      // Validate email
+      if (input.type === 'email' && !isValidEmail(input.value)) {
+        input.focus();
+        showError('Please enter a valid email address');
+        return false;
+      }
+      
+      // Validate phone
+      if (input.type === 'tel' && !isValidPhone(input.value)) {
+        input.focus();
+        showError('Please enter a valid phone number');
+        return false;
+      }
+      
+      // Validate ZIP
+      if (input.name === 'zipCode' && !/^\d{5}$/.test(input.value)) {
+        input.focus();
+        showError('Please enter a valid 5-digit ZIP code');
+        return false;
+      }
+    }
+    
+    // Validate radio buttons for step 1
+    if (step === 1) {
+      const projectType = document.querySelector('input[name="projectType"]:checked');
+      if (!projectType) {
+        showError('Please select a project type');
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function isValidPhone(phone) {
+    return /^[\d\s\-\(\)\+]{10,}$/.test(phone);
+  }
+
+  function showError(message) {
+    // Remove existing error
+    const existingError = document.querySelector('.error-message');
+    if (existingError) {
+      existingError.remove();
+    }
+    
+    // Create and show new error
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--border-radius);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-size-sm);
+    `;
+    errorDiv.textContent = message;
+    
+    const currentStepElement = document.querySelector(`[data-step="${currentStep}"]`);
+    currentStepElement.insertBefore(errorDiv, currentStepElement.querySelector('.step-actions'));
+    
+    setTimeout(() => errorDiv.remove(), 5000);
+  }
+
+  // Form submission
+  document.getElementById('projectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    if (!validateStep(3)) {
+      return;
+    }
+    
+    // Get form data
+    const formData = new FormData(this);
+    const projectData = Object.fromEntries(formData.entries());
+    
+    // Handle multiple contact methods
+    const contactMethods = formData.getAll('contactMethod');
+    projectData.contactMethod = contactMethods;
+    
+    // Show success message
+    showSuccess();
+    
+    // In a real application, you would send this data to a server
+    console.log('Project submitted:', projectData);
+  });
+
+  function showSuccess() {
+    const formContainer = document.querySelector('.form-container');
+    formContainer.innerHTML = `
+      <div style="text-align: center; padding: var(--space-12) var(--space-8);">
+        <div style="font-size: 4rem; margin-bottom: var(--space-6); color: var(--success-500);">✅</div>
+        <h2 style="color: var(--gray-900); margin-bottom: var(--space-4);">Project Submitted Successfully!</h2>
+        <p style="color: var(--gray-600); font-size: var(--font-size-lg); margin-bottom: var(--space-8);">
+          Thank you for submitting your project. We'll match you with qualified contractors in your area 
+          and you should hear back within 24 hours.
+        </p>
+        <div style="margin-bottom: var(--space-8);">
+          <h3 style="color: var(--gray-900); margin-bottom: var(--space-4);">What happens next?</h3>
+          <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+            <p style="margin-bottom: var(--space-2);"><strong>1.</strong> We review your project details</p>
+            <p style="margin-bottom: var(--space-2);"><strong>2.</strong> Match you with 2-3 qualified contractors</p>
+            <p style="margin-bottom: var(--space-2);"><strong>3.</strong> Contractors contact you with quotes</p>
+            <p><strong>4.</strong> You compare and choose the best option</p>
+          </div>
+        </div>
+        <div>
+          <a href="/contractors" class="btn-next">Browse Contractors</a>
+          <span style="margin: 0 var(--space-4);">or</span>
+          <a href="/" class="btn-back">Back to Home</a>
+        </div>
+      </div>
+    `;
+  }
+
+  // Make functions globally available
+  window.nextStep = nextStep;
+  window.prevStep = prevStep;
+</script>
